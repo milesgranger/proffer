@@ -31,16 +31,12 @@ impl Field {
 impl SrcCode for Field {
     fn generate(&self) -> String {
         let template = r#"
-            {% for doc in docs %}{{ doc }}{% endfor %}
-            {% for annotation in annotations %}{{ annotation }}{% endfor %}
-            {% if is_pub %}pub{% endif %} {{ name }}: {{ ty }},
+            {% for doc in field.docs %}{{ doc }}{% endfor %}
+            {% for annotation in field.annotations %}{{ annotation }}{% endfor %}
+            {% if field.is_pub %}pub{% endif %} {{ field.name }}: {{ field.ty }},
         "#;
         let mut context = Context::new();
-        context.insert("name", &self.name);
-        context.insert("ty", &self.ty);
-        context.insert("annotations", &self.annotations);
-        context.insert("docs", &self.docs);
-        context.insert("is_pub", &self.is_pub);
+        context.insert("field", &self);
         Tera::one_off(template, &context, false).unwrap()
     }
 }
