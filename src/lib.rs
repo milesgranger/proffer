@@ -66,18 +66,18 @@ impl Struct {
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
-         {% if is_pub %}pub{% endif %} struct {{name}} {
+         {% if struct.is_pub %}pub{% endif %} struct {{ struct.name }} {
             {% for field in fields %}{{field}}{% endfor %}
          }
         "#;
         let mut context = Context::new();
-        context.insert("name", &self.name);
-        context.insert("is_pub", &self.is_pub);
+        context.insert("struct", &self);
 
         let fields = self.fields.iter()
             .map(|f| f.generate())
             .collect::<Vec<String>>();
         context.insert("fields", &fields);
+
         Tera::one_off(template, &context, false).unwrap()
     }
 }
