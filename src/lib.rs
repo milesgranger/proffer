@@ -11,6 +11,7 @@ pub trait SrcCode {
 
 #[derive(Default, Serialize)]
 pub struct Field {
+    pub is_pub: bool,
     pub name: String,
     pub ty: String,
     pub annotations: Vec<String>,
@@ -18,10 +19,11 @@ pub struct Field {
 }
 
 impl Field {
-    pub fn new<S: ToString>(name: S, ty: S) -> Self {
+    pub fn new<S: ToString>(name: S, ty: S, is_pub: bool) -> Self {
         let mut f = Field::default();
         f.name = name.to_string();
         f.ty = ty.to_string();
+        f.is_pub = is_pub;
         f
     }
 }
@@ -31,13 +33,14 @@ impl SrcCode for Field {
         let template = r#"
             {% for doc in docs %}{{ doc }}{% endfor %}
             {% for annotation in annotations %}{{ annotation }}{% endfor %}
-            pub {{name}}: {{ty}},
+            {% if is_pub %}pub{% endif %} {{ name }}: {{ ty }},
         "#;
         let mut context = Context::new();
         context.insert("name", &self.name);
         context.insert("ty", &self.ty);
         context.insert("annotations", &self.annotations);
         context.insert("docs", &self.docs);
+        context.insert("is_pub", &self.is_pub);
         Tera::one_off(template, &context, false).unwrap()
     }
 }
@@ -45,15 +48,17 @@ impl SrcCode for Field {
 
 #[derive(Default, Serialize)]
 pub struct Struct {
+    pub is_pub: bool,
     pub name: String,
     pub fields: Vec<Field>,
     pub docs: Vec<String>
 }
 
 impl Struct {
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut s = Struct::default();
         s.name = name.to_string();
+        s.is_pub = is_pub;
         s
     }
 
@@ -65,12 +70,13 @@ impl Struct {
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
-         pub struct {{name}} {
+         {% if is_pub %}pub{% endif %} struct {{name}} {
             {% for field in fields %}{{field}}{% endfor %}
          }
         "#;
         let mut context = Context::new();
         context.insert("name", &self.name);
+        context.insert("is_pub", &self.is_pub);
 
         let fields = self.fields.iter()
             .map(|f| f.generate())
@@ -88,14 +94,14 @@ mod tests {
 
     #[test]
     fn test_struct_gen() {
-        let mut struct_ = Struct::new("Basic");
+        let mut struct_ = Struct::new("Basic", true);
 
-        let mut f = Field::new("field1", "String");
+        let mut f = Field::new("field1", "String", true);
         f.annotations.push("#[serde = w]".to_string());
         f.docs.push("/// Some example documentation".to_string());
         struct_.field(f);
 
-        struct_.field(Field::new("field2", "usize"));
+        struct_.field(Field::new("field2", "usize", true));
         let expected = r#"
             pub struct Basic {
                 pub field: usize
