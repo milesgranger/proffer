@@ -1,160 +1,107 @@
-use std::collections::HashMap;
 
-use codegen::{Scope, Module};
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use tera::{Context, Tera};
+use serde::{Serialize};
 
-type ResourceTypes = HashMap<String, ResourceSpec>;
-type Properties = HashMap<String, PropertySpec>;
 
-#[derive(Serialize, Deserialize)]
-pub(crate) enum PrimitiveType {
-    Integer,
-    String,
+
+pub trait SrcCode {
+    fn generate(&self) -> String;
 }
 
-impl PrimitiveType {
-    pub fn as_rust_type_str(&self) -> &str {
-        match self {
-            PrimitiveType::String => "&str",
-            PrimitiveType::Integer => "i32",
-        }
+
+#[derive(Default, Serialize)]
+pub struct Field {
+    pub name: String,
+    pub ty: String,
+    pub annotations: Vec<String>,
+    pub docs: Vec<String>,
+}
+
+impl Field {
+    pub fn new<S: ToString>(name: S, ty: S) -> Self {
+        let mut f = Field::default();
+        f.name = name.to_string();
+        f.ty = ty.to_string();
+        f
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub(crate) enum Type {
-    List,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) enum UpdateType {
-    Mutable,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct PropertySpec {
-    #[serde(alias = "Required")]
-    pub required: bool,
-
-    #[serde(alias = "Documentation")]
-    pub documentation: String,
-
-    #[serde(alias = "PrimitiveType")]
-    pub primitive_type: PrimitiveType,
-
-    #[serde(alias = "UpdateType")]
-    pub update_type: UpdateType,
-
-    #[serde(alias = "Type")]
-    pub type_: Option<Type>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub(crate) struct ResourceSpec {
-    #[serde(alias = "Documentation")]
-    pub documentation: String,
-
-    #[serde(alias = "Properties")]
-    pub properties: HashMap<String, PropertySpec>,
+impl SrcCode for Field {
+    fn generate(&self) -> String {
+        let template = r#"
+            {% for doc in docs %}{{ doc }}{% endfor %}
+            {% for annotation in annotations %}{{ annotation }}{% endfor %}
+            pub {{name}}: {{ty}},
+        "#;
+        let mut context = Context::new();
+        context.insert("name", &self.name);
+        context.insert("ty", &self.ty);
+        context.insert("annotations", &self.annotations);
+        context.insert("docs", &self.docs);
+        Tera::one_off(template, &context, false).unwrap()
+    }
 }
 
 
-pub(crate) fn generate_resource(scope: &mut Scope, resource_name: &str, resource_spec: &ResourceSpec) {
-
-
-
-    let pieces = resource_name.split("::").collect::<Vec<&str>>();
-    let modules = &pieces[..pieces.len() - 1];
-    let struct_name = &pieces[pieces.len() - 1].replace('.', "_");
-
-    println!("{:?}", modules);
-
-    // drill down to the module that this struct belongs in; creating them along the way.
-    let aws_module = scope.get_or_new_module("CloudFormation");
-    let module = modules.iter().fold(aws_module, |current_module, new_module| current_module.get_or_new_module(new_module));
-
-    let mut tmp_scope = codegen::Scope::new();
-    let s = tmp_scope.new_struct(&struct_name);
-    s.doc(&format!("Documentation: {}", &resource_spec.documentation));
-    resource_spec.properties.iter()
-        .for_each(|(property_name, property_spec)| {
-            s.field(property_name, property_spec.primitive_type.as_rust_type_str());
-        });
-    module.push_struct(s.clone());
-
+#[derive(Default, Serialize)]
+pub struct Struct {
+    pub name: String,
+    pub fields: Vec<Field>,
+    pub docs: Vec<String>
 }
 
+impl Struct {
+    pub fn new<S: ToString>(name: S) -> Self {
+        let mut s = Struct::default();
+        s.name = name.to_string();
+        s
+    }
 
-pub(crate) fn generate(json_spec: Value) -> String {
-    let resources = serde_json::from_value::<ResourceTypes>(json_spec).unwrap();
+    pub fn field(&mut self, field: Field) {
+        self.fields.push(field)
+    }
+}
 
-    let mut scope = codegen::Scope::new();
-    resources.iter()
-        .for_each(|(resource_name, resouce_spec)| {
-            generate_resource(&mut scope, resource_name, resouce_spec)
-        });
-    scope.to_string()
+impl SrcCode for Struct {
+    fn generate(&self) -> String {
+        let template = r#"
+         pub struct {{name}} {
+            {% for field in fields %}{{field}}{% endfor %}
+         }
+        "#;
+        let mut context = Context::new();
+        context.insert("name", &self.name);
+
+        let fields = self.fields.iter()
+            .map(|f| f.generate())
+            .collect::<Vec<String>>();
+        context.insert("fields", &fields);
+        Tera::one_off(template, &context, false).unwrap()
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
 
-    use crate::{ResourceSpec, ResourceTypes, generate_resource, generate};
-    use serde_json::{json, Value};
+    use crate::*;
 
     #[test]
-    fn test_deserialization() {
-        let resource = json!({
-            "AWS::AppMesh::VirtualRouter.PortMapping": {
-                "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html",
-                "Properties": {
-                    "Port": {
-                        "Required": true,
-                        "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html#cfn-appmesh-virtualrouter-portmapping-port",
-                        "PrimitiveType": "Integer",
-                        "UpdateType": "Mutable"
-                    },
-                    "Protocol": {
-                        "Required": true,
-                        "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html#cfn-appmesh-virtualrouter-portmapping-protocol",
-                        "PrimitiveType": "String",
-                        "UpdateType": "Mutable"
-                    }
-                }
-            }
-        });
-        assert!(serde_json::from_value::<ResourceTypes>(resource.clone()).is_ok());
-        assert!(serde_json::from_value::<ResourceSpec>(
-            resource["AWS::AppMesh::VirtualRouter.PortMapping"].clone()
-        )
-        .is_ok());
-    }
+    fn test_struct_gen() {
+        let mut struct_ = Struct::new("Basic");
 
-    #[test]
-    fn test_generation() {
-        let resources = json!({
-            "AWS::AppMesh::VirtualRouter.PortMapping": {
-                "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html",
-                "Properties": {
-                    "Port": {
-                        "Required": true,
-                        "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html#cfn-appmesh-virtualrouter-portmapping-port",
-                        "PrimitiveType": "Integer",
-                        "UpdateType": "Mutable"
-                    },
-                    "Protocol": {
-                        "Required": true,
-                        "Documentation": "http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-appmesh-virtualrouter-portmapping.html#cfn-appmesh-virtualrouter-portmapping-protocol",
-                        "PrimitiveType": "String",
-                        "UpdateType": "Mutable"
-                    }
-                }
-            }
-        });
-        let source_code = generate(resources);
-        println!("{}", source_code);
-    }
+        let mut f = Field::new("field1", "String");
+        f.annotations.push("#[serde = w]".to_string());
+        f.docs.push("/// Some example documentation".to_string());
+        struct_.field(f);
 
+        struct_.field(Field::new("field2", "usize"));
+        let expected = r#"
+            pub struct Basic {
+                pub field: usize
+            }
+        "#.to_owned();
+        println!("{}", struct_.generate());
+        //assert_eq!(src_code, expected);
+    }
 }
