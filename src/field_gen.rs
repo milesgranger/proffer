@@ -1,5 +1,5 @@
+use serde::Serialize;
 use tera::{Context, Tera};
-use serde::{Serialize};
 
 use crate::prelude::*;
 use crate::traits::SrcCode;
