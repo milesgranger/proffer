@@ -18,7 +18,7 @@ fn test_basic_gen() {
 
     struct_.add_field(Field::new("field2", "usize", true));
     let expected = r#"
-         pub struct Basic {
+        pub struct Basic {
             /// Some example documentation
             #[serde = w]
             pub field1: String,
@@ -35,20 +35,27 @@ fn test_basic_gen() {
 }
 
 #[test]
-fn test_single_generic_gen() {
+fn test_generic_gen() {
     let mut s = Struct::new("Generic", true);
-    s.add_generic("T", vec!["ToString"]);
-    s.add_generic("S", vec!["ToString", "Number"]);
-
+    s.add_generic(Generic::new("T", vec!["ToString"]));
+    s.add_generic(Generic::new("S", vec!["ToString", "Number"]));
+    s.add_field(Field::new("field1", "S", false));
+    s.add_field(Field::new("field2", "T", false));
     let src_code = s.generate();
     println!("{}", &src_code);
     let expected = r#"
-        pub struct Generic<T>
+        pub struct Generic<T, S>
             where
-                T: ToString
+                T: ToString,
+                S: ToString + Number,
         {
-            field1: f64,
+            field1: S,
             field2: T,
         }
     "#;
+    let src_code = s.generate();
+    assert_eq!(
+        normalize_whitespace(&src_code),
+        normalize_whitespace(&expected)
+    );
 }
