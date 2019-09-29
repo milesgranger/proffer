@@ -3,8 +3,17 @@ name = "proffer"
 version = "0.1.0"
 authors = ["Miles Granger <miles59923@gmail.com>"]
 edition = "2018"
+description = "Rust code generation"
+keywords = ["code", "generation", "generate"]
+homepage = "https://github.com/milesgranger/proffer"
+repository = "https://github.com/milesgranger/proffer"
+documentation = "https://docs.rs/crate/proffer/"
+license-file = "LICENSE"
+exclude = [".circleci/config.yml"]
+readme = "README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[badges]
+circle-ci = { repository = "milesgranger/proffer", branch = "master" }
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
