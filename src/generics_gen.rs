@@ -18,11 +18,15 @@ pub struct Generic {
 
 impl Generic {
     /// Create a new `Generic`
-    pub fn new<S: ToString>(id: S, traits: Vec<S>) -> Self {
-        Self {
-            generic: id.to_string(),
-            traits: traits.into_iter().map(|s| s.to_string()).collect(),
-        }
+    pub fn new<S: ToString>(id: S) -> Self {
+        let mut g = Self::default();
+        g.generic = id.to_string();
+        g
+    }
+    /// Set the trait bounds of this generic
+    pub fn add_trait_bounds<S: ToString>(mut self, traits: Vec<S>) -> Self {
+        self.traits.extend(traits.iter().map(|t| t.to_string()));
+        self
     }
 }
 

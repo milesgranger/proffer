@@ -42,8 +42,8 @@ fn basic_gen() {
 fn generic_gen() {
     let s = Struct::new("Generic")
         .set_is_pub(true)
-        .add_generic(Generic::new("T", vec!["ToString"]))
-        .add_generic(Generic::new("S", vec!["ToString", "Number"]))
+        .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
+        .add_generic(Generic::new("S").add_trait_bounds(vec!["ToString", "Number"]))
         .add_field(Field::new("field1", "S"))
         .add_field(Field::new("field2", "T"));
     let src_code = s.generate();

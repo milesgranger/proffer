@@ -10,7 +10,7 @@
 //! let e = Enum::new("Foo")
 //!     .add_variant(Variant::new("A"))
 //!     .add_variant(Variant::new("B").set_inner(Some("(T)")))
-//!     .add_generic(Generic::new("T", vec![]));
+//!     .add_generic(Generic::new("T"));
 //!
 //! let src_code = e.generate();
 //! let expected = r#"

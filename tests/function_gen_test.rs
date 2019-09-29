@@ -51,8 +51,8 @@ fn function_with_generic() {
         .set_is_pub(true)
         .add_parameter(Parameter::new("bar1", "T"))
         .add_parameter(Parameter::new("bar2", "S"))
-        .add_generic(Generic::new("T", vec!["ToString", "Number"]))
-        .add_generic(Generic::new("S", vec!["Display"]));
+        .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString", "Number"]))
+        .add_generic(Generic::new("S").add_trait_bounds(vec!["Display"]));
     let expected = r#"
         pub fn foo<T, S>(bar1: T, bar2: S) -> ()
             where
@@ -76,8 +76,8 @@ fn function_with_generic_no_bounds() {
         .set_is_pub(true)
         .add_parameter(Parameter::new("bar1", "T"))
         .add_parameter(Parameter::new("bar2", "S"))
-        .add_generic(Generic::new("T", vec![]))
-        .add_generic(Generic::new("S", vec![]));
+        .add_generic(Generic::new("T"))
+        .add_generic(Generic::new("S"));
     let expected = r#"
         pub fn foo<T, S>(bar1: T, bar2: S) -> ()
             where

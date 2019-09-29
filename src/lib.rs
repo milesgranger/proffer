@@ -10,14 +10,14 @@
 //! use proffer::*;
 //!
 //! let ipl = Impl::new("That")
-//!     .add_generic(Generic::new("T", vec!["ToString"]))
+//!     .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
 //!     .add_function(
 //!         Function::new("foo")
 //!             .set_is_pub(true)
 //!             .add_parameter(Parameter::new("bar1", "T"))
 //!             .add_parameter(Parameter::new("bar2", "S"))
 //!             .set_return_ty("T")
-//!             .add_generic(Generic::new("S", vec![]))
+//!             .add_generic(Generic::new("S"))
 //!             .set_body("bar1")
 //!     );
 //!
