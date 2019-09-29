@@ -1,3 +1,11 @@
+//!
+//!
+//! Function pieces, specifically `Function` which is composed of `FunctionSignature`
+//! and `FunctionBody`. Naturally, a `Function` can be used as a "method" for another
+//! object, by specifying `self` (or some variant of it) as the first `Parameter` to
+//! a `Function` object.
+//!
+
 use serde::Serialize;
 use tera::{Context, Tera};
 
@@ -7,29 +15,55 @@ use crate::{Generic, Generics};
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize)]
 pub struct Function {
-    pub signature: FunctionSignature,
-    pub body: FunctionBody,
+    signature: FunctionSignature,
+    body: FunctionBody,
 }
 
+/// Represents a function/method signature in source code
 #[derive(Default, Serialize)]
 pub struct FunctionSignature {
-    pub name: String,
-    pub is_pub: bool,
-    pub parameters: Vec<Parameter>,
-    pub generics: Generics,
-    pub return_ty: Option<String>,
+    name: String,
+    is_pub: bool,
+    parameters: Vec<Parameter>,
+    generics: Generics,
+    return_ty: Option<String>,
 }
 
 impl FunctionSignature {
+
+    /// Create a new function signature.
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut f = Self::default();
         f.name = name.to_string();
         f.is_pub = is_pub;
         f
     }
+
+    /// Add a parameter to this signature
     pub fn add_parameter(&mut self, param: Parameter) {
         self.parameters.push(param)
     }
+
+    /// Add a generic to this signature
+    pub fn add_generic(&mut self, generic: Generic) {
+        self.generics.add_generic(generic)
+    }
+
+    /// Set a return type, if `None` will result in `()` type.
+    pub fn set_return_ty<S: ToString>(&mut self, ty: Option<S>) {
+        self.return_ty = ty.map(|s| s.to_string());
+    }
+
+    /// Set if this signature should be prefixed with `pub`
+    pub fn set_is_pub(&mut self, is_pub: bool) {
+        self.is_pub = is_pub;
+    }
+
+    /// Set the name of this function.
+    pub fn set_name<S: ToString>(&mut self, name: S) {
+        self.name = name.to_string();
+    }
+
 }
 
 impl SrcCode for FunctionSignature {
@@ -68,6 +102,7 @@ impl SrcCode for FunctionSignature {
     }
 }
 
+/// Represents the function/method's body
 #[derive(Default, Serialize)]
 pub struct FunctionBody {
     body: String,
@@ -96,37 +131,65 @@ where
 }
 
 impl Function {
+    /// Create a new function
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut f = Self::default();
         f.signature.name = name.to_string();
         f.signature.is_pub = is_pub;
         f
     }
+
+    /// Add a new parameter to this function
     pub fn add_parameter(&mut self, param: Parameter) {
         self.signature.parameters.push(param)
     }
+    /// Add a new trait bound generic to this function
     pub fn add_generic(&mut self, generic: Generic) {
         self.signature.generics.add_generic(generic)
     }
+    /// Set the return type of this function
     pub fn set_return_ty<S: ToString>(&mut self, ty: S) {
         self.signature.return_ty = Some(ty.to_string());
     }
+    /// Set the body of the function, this should be valid Rust source code syntax.
     pub fn set_body<S: Into<FunctionBody>>(&mut self, body: S) {
         self.body = body.into()
     }
 }
 
+/// Represents a single parameter to a `Function`
 #[derive(Serialize, Default)]
 pub struct Parameter {
-    pub name: String,
-    pub ty: String,
+    name: String,
+    ty: String,
 }
 impl Parameter {
+    /// Create a new parameter
+    ///
+    /// Example
+    /// -------
+    /// ```
+    /// use proffer::*;
+    ///
+    /// let param = Parameter::new("foo", "usize").generate();
+    /// let expected = "foo: usize";
+    /// assert_eq!(expected, &param);
+    /// ```
+    ///
     pub fn new<S: ToString>(name: S, ty: S) -> Self {
         Self {
             name: name.to_string(),
             ty: ty.to_string(),
         }
+    }
+}
+
+impl SrcCode for Parameter {
+    fn generate(&self) -> String {
+        let template = "{{ self.name }}: {{ self.ty }}";
+        let mut ctx = Context::new();
+        ctx.insert("self", &self);
+        Tera::one_off(template, &ctx, false).unwrap()
     }
 }
 

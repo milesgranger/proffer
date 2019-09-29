@@ -12,14 +12,17 @@ fn basic_gen() {
     let mut struct_ = Struct::new("Basic", true);
 
     let mut f = Field::new("field1", "String", true);
-    f.annotations.push("#[serde = w]".to_string());
-    f.docs.push("/// Some example documentation".to_string());
+    f.add_annotation("#[serde = w]");
+    f.add_doc("/// Some example documentation");
+    f.add_docs(vec!["/// Another line", "/// and another"]);
     struct_.add_field(f);
 
     struct_.add_field(Field::new("field2", "usize", true));
     let expected = r#"
         pub struct Basic {
             /// Some example documentation
+            /// Another line
+            /// and another
             #[serde = w]
             pub field1: String,
             pub field2: usize,

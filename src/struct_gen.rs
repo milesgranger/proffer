@@ -1,19 +1,27 @@
+//!
+//!
+//! Create a `struct` object.
+//!
+
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::traits::SrcCode;
-use crate::{Field, Generic, Generics, Impl};
+use crate::*;
 
+
+/// Represents a `struct` in source code.
 #[derive(Default, Serialize)]
 pub struct Struct {
-    pub is_pub: bool,
-    pub name: String,
-    pub fields: Vec<Field>,
-    pub generics: Generics,
-    pub docs: Vec<String>,
+    is_pub: bool,
+    name: String,
+    fields: Vec<Field>,
+    generics: Generics,
+    docs: Vec<String>,
 }
 
 impl Struct {
+
+    /// Create a new `Struct`
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut s = Struct::default();
         s.name = name.to_string();
@@ -21,9 +29,12 @@ impl Struct {
         s
     }
 
+    /// Add a new field to this struct
     pub fn add_field(&mut self, field: Field) {
         self.fields.push(field)
     }
+
+    /// Add a trait bound to this struct
     pub fn add_generic(&mut self, generic: Generic) {
         self.generics.add_generic(generic)
     }

@@ -1,27 +1,39 @@
+//!
+//! Create `impl` blocks for functions, traits, and other objects.
+//!
+
 use serde::Serialize;
 
 use crate::traits::SrcCode;
 use crate::{Function, Generic, Generics, Trait};
 use tera::{Context, Tera};
 
+
+/// Represents an `impl` block
 #[derive(Serialize, Default)]
 pub struct Impl {
-    pub generics: Generics,
-    pub impl_trait: Option<Trait>,
-    pub functions: Vec<Function>,
-    pub obj_name: String,
+    generics: Generics,
+    impl_trait: Option<Trait>,
+    functions: Vec<Function>,
+    obj_name: String,
 }
 
 impl Impl {
+
+    /// Create a new impl block
     pub fn new<S: ToString>(obj_name: S, tr8t: Option<Trait>) -> Self {
         let mut mpl = Self::default();
         mpl.obj_name = obj_name.to_string();
         mpl.impl_trait = tr8t;
         mpl
     }
+
+    /// Add a function to this `Impl` block
     pub fn add_function(&mut self, func: Function) {
         self.functions.push(func)
     }
+
+    /// Add a generic to this `Impl` block
     pub fn add_generic(&mut self, generic: Generic) {
         self.generics.add_generic(generic)
     }
