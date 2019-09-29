@@ -14,8 +14,8 @@ use tera::{Context, Tera};
 /// -------
 /// ```
 /// use proffer::*;
-/// let mut tr8t = Trait::new("Foo");
-/// tr8t.add_signature(FunctionSignature::new("bar"));
+/// let tr8t = Trait::new("Foo")
+///     .add_signature(FunctionSignature::new("bar"));
 /// let expected = r#"
 ///     trait Foo
 ///     {
@@ -44,18 +44,21 @@ impl Trait {
     }
 
     /// Add a new signature requirement to this trait.
-    pub fn add_signature(&mut self, signature: FunctionSignature) {
-        self.signatures.push(signature)
+    pub fn add_signature(mut self, signature: FunctionSignature) -> Self {
+        self.signatures.push(signature);
+        self
     }
 
     /// Set if this is a `pub` trait
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
 
     /// Add a generic bound to this trait.
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics = self.generics.add_generic(generic);
+        self
     }
 }
 

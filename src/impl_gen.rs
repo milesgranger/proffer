@@ -26,18 +26,21 @@ impl Impl {
     }
 
     /// Set if this `impl` is implementing a `Trait` for an object.
-    pub fn set_impl_trait(&mut self, impl_trait: Option<Trait>) {
-        self.impl_trait = impl_trait
+    pub fn set_impl_trait(mut self, impl_trait: Option<Trait>) -> Self {
+        self.impl_trait = impl_trait;
+        self
     }
 
     /// Add a function to this `Impl` block
-    pub fn add_function(&mut self, func: Function) {
-        self.functions.push(func)
+    pub fn add_function(mut self, func: Function) -> Self {
+        self.functions.push(func);
+        self
     }
 
     /// Add a generic to this `Impl` block
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics = self.generics.add_generic(generic);
+        self
     }
 }
 

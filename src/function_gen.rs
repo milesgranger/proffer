@@ -38,28 +38,33 @@ impl FunctionSignature {
     }
 
     /// Add a parameter to this signature
-    pub fn add_parameter(&mut self, param: Parameter) {
-        self.parameters.push(param)
+    pub fn add_parameter(mut self, param: Parameter) -> Self {
+        self.parameters.push(param);
+        self
     }
 
     /// Add a generic to this signature
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics = self.generics.add_generic(generic);
+        self
     }
 
     /// Set a return type, if `None` will result in `()` type.
-    pub fn set_return_ty<S: ToString>(&mut self, ty: Option<S>) {
+    pub fn set_return_ty<S: ToString>(mut self, ty: Option<S>) -> Self {
         self.return_ty = ty.map(|s| s.to_string());
+        self
     }
 
     /// Set if this signature should be prefixed with `pub`
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
 
     /// Set the name of this function.
-    pub fn set_name<S: ToString>(&mut self, name: S) {
+    pub fn set_name<S: ToString>(mut self, name: S) -> Self {
         self.name = name.to_string();
+        self
     }
 }
 
@@ -136,24 +141,29 @@ impl Function {
     }
 
     /// Add a new parameter to this function
-    pub fn add_parameter(&mut self, param: Parameter) {
-        self.signature.parameters.push(param)
+    pub fn add_parameter(mut self, param: Parameter) -> Self {
+        self.signature.parameters.push(param);
+        self
     }
     /// Add a new trait bound generic to this function
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.signature.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.signature.generics = self.signature.generics.add_generic(generic);
+        self
     }
     /// Set the return type of this function
-    pub fn set_return_ty<S: ToString>(&mut self, ty: S) {
+    pub fn set_return_ty<S: ToString>(mut self, ty: S) -> Self {
         self.signature.return_ty = Some(ty.to_string());
+        self
     }
     /// Set if this function is public
-    pub fn set_is_pub(&mut self, is_pub: bool) {
-        self.signature.set_is_pub(is_pub)
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
+        self.signature = self.signature.set_is_pub(is_pub);
+        self
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
-    pub fn set_body<S: Into<FunctionBody>>(&mut self, body: S) {
-        self.body = body.into()
+    pub fn set_body<S: Into<FunctionBody>>(mut self, body: S) -> Self {
+        self.body = body.into();
+        self
     }
 }
 

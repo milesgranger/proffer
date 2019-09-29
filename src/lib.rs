@@ -9,18 +9,17 @@
 //! ```
 //! use proffer::*;
 //!
-//! let mut ipl = Impl::new("That");
-//! ipl.add_generic(Generic::new("T", vec!["ToString"]));
-//!
-//! let mut method = Function::new("foo");
-//! method.set_is_pub(true);
-//! method.add_parameter(Parameter::new("bar1", "T"));
-//! method.add_parameter(Parameter::new("bar2", "S"));
-//! method.set_return_ty("T");
-//! method.add_generic(Generic::new("S", vec![]));
-//! method.set_body("bar");
-//!
-//! ipl.add_function(method);
+//! let ipl = Impl::new("That")
+//!     .add_generic(Generic::new("T", vec!["ToString"]))
+//!     .add_function(
+//!         Function::new("foo")
+//!             .set_is_pub(true)
+//!             .add_parameter(Parameter::new("bar1", "T"))
+//!             .add_parameter(Parameter::new("bar2", "S"))
+//!             .set_return_ty("T")
+//!             .add_generic(Generic::new("S", vec![]))
+//!             .set_body("bar1")
+//!     );
 //!
 //! let expected = r#"
 //!     impl<T> That<T>
@@ -31,7 +30,7 @@
 //!             where
 //!                 S: ,
 //!         {
-//!             bar
+//!             bar1
 //!         }
 //!     }
 //! "#;

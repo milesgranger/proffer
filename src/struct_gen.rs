@@ -27,18 +27,21 @@ impl Struct {
     }
 
     /// Add a new field to this struct
-    pub fn add_field(&mut self, field: Field) {
-        self.fields.push(field)
+    pub fn add_field(mut self, field: Field) -> Self {
+        self.fields.push(field);
+        self
     }
 
     /// Add a trait bound to this struct
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics = self.generics.add_generic(generic);
+        self
     }
 
     /// Set if this struct is `pub`
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
 }
 

@@ -40,27 +40,36 @@ impl Field {
     }
 
     /// Add a single field annotation. ie `#[serde(rename="something")`
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) {
-        self.annotations.push(annotation.to_string())
+    pub fn add_annotation<S: ToString>(mut self, annotation: S) -> Self {
+        self.annotations.push(annotation.to_string());
+        self
     }
 
     /// Add multiple field annotations at once.
-    pub fn add_annotations<S: ToString, I: IntoIterator<Item = S>>(&mut self, annotations: I) {
-        annotations.into_iter().for_each(|a| self.add_annotation(a))
+    pub fn add_annotations<S: ToString, I: IntoIterator<Item = S>>(
+        mut self,
+        annotations: I,
+    ) -> Self {
+        self.annotations
+            .extend(annotations.into_iter().map(|a| a.to_string()));
+        self
     }
 
     /// Add a single documentation line for this field
-    pub fn add_doc<S: ToString>(&mut self, doc: S) {
-        self.docs.push(doc.to_string())
+    pub fn add_doc<S: ToString>(mut self, doc: S) -> Self {
+        self.docs.push(doc.to_string());
+        self
     }
 
     /// Add multiple documentation lines at once.
-    pub fn add_docs<S: ToString, I: IntoIterator<Item = S>>(&mut self, docs: I) {
-        docs.into_iter().for_each(|d| self.add_doc(d))
+    pub fn add_docs<S: ToString, I: IntoIterator<Item = S>>(mut self, docs: I) -> Self {
+        self.docs.extend(docs.into_iter().map(|d| d.to_string()));
+        self
     }
     /// Set if this is public
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
 }
 

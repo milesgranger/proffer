@@ -39,8 +39,9 @@ impl Generics {
     }
 
     /// Add a `Generic`
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.push(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics.push(generic);
+        self
     }
 
     /// Check how many generics are held here

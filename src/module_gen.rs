@@ -6,15 +6,15 @@
 //!
 //! ```
 //!  use proffer::*;
-//!  let mut m = Module::new("foo");
-//!  m.set_is_pub(true);
-//!  m.add_trait(Trait::new("Bar"));
-//!  m.add_function(Function::new("foo"));
-//!  m.add_struct(Struct::new("Thingy"));
-//!  m.add_impl(Impl::new("Thingy"));
-//!  m.add_outer_annotation("#[special_outer_annotation]");
-//!  m.add_inner_annotation("#![special_inner_annotation]");
-//!  m.add_doc("//! Module level docs");
+//!  let m = Module::new("foo")
+//!     .set_is_pub(true)
+//!     .add_trait(Trait::new("Bar"))
+//!     .add_function(Function::new("foo"))
+//!     .add_struct(Struct::new("Thingy"))
+//!     .add_impl(Impl::new("Thingy"))
+//!     .add_outer_annotation("#[special_outer_annotation]")
+//!     .add_inner_annotation("#![special_inner_annotation]")
+//!     .add_doc("//! Module level docs");
 //!
 //! let src_code = m.generate();
 //!
@@ -74,40 +74,49 @@ impl Module {
         m
     }
     /// Set if this module is public
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
     /// Add a function to the module
-    pub fn add_function(&mut self, func: Function) {
-        self.functions.push(func)
+    pub fn add_function(mut self, func: Function) -> Self {
+        self.functions.push(func);
+        self
     }
     /// Add a trait to the module
-    pub fn add_trait(&mut self, tr8t: Trait) {
-        self.traits.push(tr8t)
+    pub fn add_trait(mut self, tr8t: Trait) -> Self {
+        self.traits.push(tr8t);
+        self
     }
     /// Add a struct to the module
-    pub fn add_struct(&mut self, stct: Struct) {
-        self.structs.push(stct)
+    pub fn add_struct(mut self, stct: Struct) -> Self {
+        self.structs.push(stct);
+        self
     }
     /// Add an impl block to the module
-    pub fn add_impl(&mut self, iml: Impl) {
-        self.impls.push(iml)
+    pub fn add_impl(mut self, iml: Impl) -> Self {
+        self.impls.push(iml);
+        self
     }
     /// Add outer module annotations
-    pub fn add_outer_annotation<S: ToString>(&mut self, ann: S) {
-        self.outer_annotations.push(ann.to_string())
+    pub fn add_outer_annotation<S: ToString>(mut self, ann: S) -> Self {
+        self.outer_annotations.push(ann.to_string());
+        self
     }
     /// Add inner module annotations
-    pub fn add_inner_annotation<S: ToString>(&mut self, ann: S) {
-        self.inner_annotations.push(ann.to_string())
+    pub fn add_inner_annotation<S: ToString>(mut self, ann: S) -> Self {
+        self.inner_annotations.push(ann.to_string());
+        self
     }
     /// Add a doc string to this module
-    pub fn add_doc<S: ToString>(&mut self, doc: S) {
-        self.docs.push(doc.to_string())
+    pub fn add_doc<S: ToString>(mut self, doc: S) -> Self {
+        self.docs.push(doc.to_string());
+        self
     }
     /// Add an enum to the module
-    pub fn add_enum(&mut self, enumm: Enum) {
-        self.enums.push(enumm)
+    pub fn add_enum(mut self, enumm: Enum) -> Self {
+        self.enums.push(enumm);
+        self
     }
 }
 

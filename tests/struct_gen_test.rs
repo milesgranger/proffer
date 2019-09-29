@@ -9,17 +9,16 @@ fn normalize_whitespace(s: &str) -> String {
 
 #[test]
 fn basic_gen() {
-    let mut struct_ = Struct::new("Basic");
-    struct_.set_is_pub(true);
-
-    let mut f = Field::new("field1", "String");
-    f.set_is_pub(true);
-    f.add_annotation("#[serde = w]");
-    f.add_doc("/// Some example documentation");
-    f.add_docs(vec!["/// Another line", "/// and another"]);
-    struct_.add_field(f);
-
-    struct_.add_field(Field::new("field2", "usize"));
+    let struct_ = Struct::new("Basic")
+        .set_is_pub(true)
+        .add_field(
+            Field::new("field1", "String")
+                .set_is_pub(true)
+                .add_annotation("#[serde = w]")
+                .add_doc("/// Some example documentation")
+                .add_docs(vec!["/// Another line", "/// and another"]),
+        )
+        .add_field(Field::new("field2", "usize"));
     let expected = r#"
         pub struct Basic {
             /// Some example documentation
@@ -41,12 +40,12 @@ fn basic_gen() {
 
 #[test]
 fn generic_gen() {
-    let mut s = Struct::new("Generic");
-    s.set_is_pub(true);
-    s.add_generic(Generic::new("T", vec!["ToString"]));
-    s.add_generic(Generic::new("S", vec!["ToString", "Number"]));
-    s.add_field(Field::new("field1", "S"));
-    s.add_field(Field::new("field2", "T"));
+    let s = Struct::new("Generic")
+        .set_is_pub(true)
+        .add_generic(Generic::new("T", vec!["ToString"]))
+        .add_generic(Generic::new("S", vec!["ToString", "Number"]))
+        .add_field(Field::new("field1", "S"))
+        .add_field(Field::new("field2", "T"));
     let src_code = s.generate();
     println!("{}", &src_code);
     let expected = r#"
@@ -64,6 +63,4 @@ fn generic_gen() {
         normalize_whitespace(&src_code),
         normalize_whitespace(&expected)
     );
-
-    // Add basic impl block.
 }

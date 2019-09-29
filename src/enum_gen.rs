@@ -7,15 +7,10 @@
 //! ```
 //! use proffer::*;
 //!
-//! let mut e = Enum::new("Foo");
-//!
-//! e.add_variant(Variant::new("A"));
-//!
-//! let mut v = Variant::new("B");
-//! v.set_inner(Some("(T)"));
-//! e.add_variant(v);
-//!
-//! e.add_generic(Generic::new("T", vec![]));
+//! let e = Enum::new("Foo")
+//!     .add_variant(Variant::new("A"))
+//!     .add_variant(Variant::new("B").set_inner(Some("(T)")))
+//!     .add_generic(Generic::new("T", vec![]));
 //!
 //! let src_code = e.generate();
 //! let expected = r#"
@@ -59,16 +54,19 @@ impl Enum {
         e
     }
     /// Set if this is public
-    pub fn set_is_pub(&mut self, is_pub: bool) {
+    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
     }
     /// Add a variant
-    pub fn add_variant(&mut self, variant: Variant) {
-        self.variants.push(variant)
+    pub fn add_variant(mut self, variant: Variant) -> Self {
+        self.variants.push(variant);
+        self
     }
     /// Add a generic bound to this Enum
-    pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.add_generic(generic)
+    pub fn add_generic(mut self, generic: Generic) -> Self {
+        self.generics = self.generics.add_generic(generic);
+        self
     }
 }
 
@@ -80,8 +78,9 @@ impl Variant {
         v
     }
     /// Set the inner portion of this variant, expected to be valid Rust source code.
-    pub fn set_inner<S: ToString>(&mut self, inner: Option<S>) {
+    pub fn set_inner<S: ToString>(mut self, inner: Option<S>) -> Self {
         self.inner = inner.map(|s| s.to_string());
+        self
     }
 }
 

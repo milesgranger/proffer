@@ -2,20 +2,16 @@ use proffer::*;
 
 #[test]
 fn test_module_basic() {
-    let mut m = Module::new("foo");
-    m.set_is_pub(true);
-
-    let mut t = Trait::new("Bar");
-    t.set_is_pub(true);
-    m.add_trait(t);
-
-    m.add_function(Function::new("foo"));
-    m.add_struct(Struct::new("Thingy"));
-    m.add_impl(Impl::new("Thingy"));
-    m.add_outer_annotation("#[special_outer_annotation]");
-    m.add_inner_annotation("#![special_inner_annotation]");
-    m.add_doc("//! Module level docs");
-    m.add_enum(Enum::new("EnumThingy"));
+    let m = Module::new("foo")
+        .set_is_pub(true)
+        .add_trait(Trait::new("Bar").set_is_pub(true))
+        .add_function(Function::new("foo"))
+        .add_struct(Struct::new("Thingy"))
+        .add_impl(Impl::new("Thingy"))
+        .add_outer_annotation("#[special_outer_annotation]")
+        .add_inner_annotation("#![special_inner_annotation]")
+        .add_doc("//! Module level docs")
+        .add_enum(Enum::new("EnumThingy"));
     let src_code = m.generate();
 
     let expected = r#"
