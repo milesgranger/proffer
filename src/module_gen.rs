@@ -51,7 +51,6 @@ use tera::{Context, Tera};
 
 use crate::*;
 
-
 /// Represent a module of code
 #[derive(Default, Serialize)]
 pub struct Module {
@@ -61,6 +60,7 @@ pub struct Module {
     functions: Vec<Function>,
     structs: Vec<Struct>,
     impls: Vec<Impl>,
+    enums: Vec<Enum>,
     docs: Vec<String>,
     inner_annotations: Vec<String>,
     outer_annotations: Vec<String>,
@@ -105,8 +105,11 @@ impl Module {
     pub fn add_doc<S: ToString>(&mut self, doc: S) {
         self.docs.push(doc.to_string())
     }
+    /// Add an enum to the module
+    pub fn add_enum(&mut self, enumm: Enum) {
+        self.enums.push(enumm)
+    }
 }
-
 
 impl SrcCode for Module {
     fn generate(&self) -> String {
@@ -128,9 +131,9 @@ impl SrcCode for Module {
         &self.functions.iter().for_each(|v| objs.push(v.generate()));
         &self.structs.iter().for_each(|v| objs.push(v.generate()));
         &self.impls.iter().for_each(|v| objs.push(v.generate()));
+        &self.enums.iter().for_each(|v| objs.push(v.generate()));
 
         ctx.insert("objs", &objs);
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }
-

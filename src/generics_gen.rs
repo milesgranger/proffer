@@ -33,7 +33,6 @@ pub struct Generics {
 }
 
 impl Generics {
-
     /// Create a new collection of `Generic`s.
     pub fn new(generics: Vec<Generic>) -> Self {
         Self { generics }

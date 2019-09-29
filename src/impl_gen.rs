@@ -8,7 +8,6 @@ use crate::traits::SrcCode;
 use crate::{Function, Generic, Generics, Trait};
 use tera::{Context, Tera};
 
-
 /// Represents an `impl` block
 #[derive(Serialize, Default)]
 pub struct Impl {
@@ -19,7 +18,6 @@ pub struct Impl {
 }
 
 impl Impl {
-
     /// Create a new impl block
     pub fn new<S: ToString>(obj_name: S, tr8t: Option<Trait>) -> Self {
         let mut mpl = Self::default();

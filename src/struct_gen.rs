@@ -8,7 +8,6 @@ use tera::{Context, Tera};
 
 use crate::*;
 
-
 /// Represents a `struct` in source code.
 #[derive(Default, Serialize)]
 pub struct Struct {
@@ -20,7 +19,6 @@ pub struct Struct {
 }
 
 impl Struct {
-
     /// Create a new `Struct`
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut s = Struct::default();

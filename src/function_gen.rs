@@ -30,7 +30,6 @@ pub struct FunctionSignature {
 }
 
 impl FunctionSignature {
-
     /// Create a new function signature.
     pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
         let mut f = Self::default();
@@ -63,7 +62,6 @@ impl FunctionSignature {
     pub fn set_name<S: ToString>(&mut self, name: S) {
         self.name = name.to_string();
     }
-
 }
 
 impl SrcCode for FunctionSignature {

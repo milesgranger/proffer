@@ -11,6 +11,7 @@ fn test_module_basic() {
     m.add_outer_annotation("#[special_outer_annotation]");
     m.add_inner_annotation("#![special_inner_annotation]");
     m.add_doc("//! Module level docs");
+    m.add_enum(Enum::new("EnumThingy"));
     let src_code = m.generate();
 
     let expected = r#"
@@ -31,11 +32,11 @@ fn test_module_basic() {
             impl Thingy
             {
             }
+            enum EnumThingy {
+            }
 
         }
     "#;
     println!("{}", &src_code);
-    assert_eq!(
-        norm_whitespace(expected), norm_whitespace(&src_code)
-    )
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
 }
