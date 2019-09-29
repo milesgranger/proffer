@@ -9,10 +9,11 @@
 //! ```
 //! use proffer::*;
 //!
-//! let mut ipl = Impl::new("That", None);
+//! let mut ipl = Impl::new("That");
 //! ipl.add_generic(Generic::new("T", vec!["ToString"]));
 //!
-//! let mut method = Function::new("foo", true);
+//! let mut method = Function::new("foo");
+//! method.set_is_pub(true);
 //! method.add_parameter(Parameter::new("bar1", "T"));
 //! method.add_parameter(Parameter::new("bar2", "S"));
 //! method.set_return_ty("T");

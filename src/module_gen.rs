@@ -8,10 +8,10 @@
 //!  use proffer::*;
 //!  let mut m = Module::new("foo");
 //!  m.set_is_pub(true);
-//!  m.add_trait(Trait::new("Bar", true));
-//!  m.add_function(Function::new("foo", false));
-//!  m.add_struct(Struct::new("Thingy", false));
-//!  m.add_impl(Impl::new("Thingy", None));
+//!  m.add_trait(Trait::new("Bar"));
+//!  m.add_function(Function::new("foo"));
+//!  m.add_struct(Struct::new("Thingy"));
+//!  m.add_impl(Impl::new("Thingy"));
 //!  m.add_outer_annotation("#[special_outer_annotation]");
 //!  m.add_inner_annotation("#![special_inner_annotation]");
 //!  m.add_doc("//! Module level docs");
@@ -25,7 +25,7 @@
 //!          #![special_inner_annotation]
 //!          //! Module level docs
 //!
-//!          pub trait Bar
+//!          trait Bar
 //!          {
 //!          }
 //!          fn foo() -> ()

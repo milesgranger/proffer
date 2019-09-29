@@ -9,7 +9,7 @@ fn normalize_whitespace(s: &str) -> String {
 
 #[test]
 fn function_gen_basic() {
-    let function = Function::new("foo", false);
+    let function = Function::new("foo");
 
     let expected = r#"
         fn foo() -> ()
@@ -27,7 +27,8 @@ fn function_gen_basic() {
 
 #[test]
 fn function_gen_parameters() {
-    let mut function = Function::new("foo", true);
+    let mut function = Function::new("foo");
+    function.set_is_pub(true);
     function.add_parameter(Parameter::new("bar1", "usize"));
     function.add_parameter(Parameter::new("bar2", "&str"));
     let expected = r#"
@@ -46,7 +47,8 @@ fn function_gen_parameters() {
 
 #[test]
 fn function_with_generic() {
-    let mut function = Function::new("foo", true);
+    let mut function = Function::new("foo");
+    function.set_is_pub(true);
     function.add_parameter(Parameter::new("bar1", "T"));
     function.add_parameter(Parameter::new("bar2", "S"));
     function.add_generic(Generic::new("T", vec!["ToString", "Number"]));
@@ -70,7 +72,8 @@ fn function_with_generic() {
 
 #[test]
 fn function_with_generic_no_bounds() {
-    let mut function = Function::new("foo", true);
+    let mut function = Function::new("foo");
+    function.set_is_pub(true);
     function.add_parameter(Parameter::new("bar1", "T"));
     function.add_parameter(Parameter::new("bar2", "S"));
     function.add_generic(Generic::new("T", vec![]));

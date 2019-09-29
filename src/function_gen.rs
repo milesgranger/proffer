@@ -31,10 +31,9 @@ pub struct FunctionSignature {
 
 impl FunctionSignature {
     /// Create a new function signature.
-    pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
+    pub fn new<S: ToString>(name: S) -> Self {
         let mut f = Self::default();
         f.name = name.to_string();
-        f.is_pub = is_pub;
         f
     }
 
@@ -130,10 +129,9 @@ where
 
 impl Function {
     /// Create a new function
-    pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
+    pub fn new<S: ToString>(name: S) -> Self {
         let mut f = Self::default();
         f.signature.name = name.to_string();
-        f.signature.is_pub = is_pub;
         f
     }
 
@@ -148,6 +146,10 @@ impl Function {
     /// Set the return type of this function
     pub fn set_return_ty<S: ToString>(&mut self, ty: S) {
         self.signature.return_ty = Some(ty.to_string());
+    }
+    /// Set if this function is public
+    pub fn set_is_pub(&mut self, is_pub: bool) {
+        self.signature.set_is_pub(is_pub)
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
     pub fn set_body<S: Into<FunctionBody>>(&mut self, body: S) {

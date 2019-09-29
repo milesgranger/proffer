@@ -15,9 +15,9 @@ use crate::*;
 /// ```
 /// use proffer::*;
 ///
-/// let field = Field::new("foo", "usize", true)
+/// let field = Field::new("foo", "usize")
 ///     .generate();
-/// let expected = "pub foo: usize,";
+/// let expected = "foo: usize,";
 ///
 /// assert_eq!(norm_whitespace(&field), norm_whitespace(expected));
 /// ```
@@ -32,11 +32,10 @@ pub struct Field {
 
 impl Field {
     /// Create a new `Field`
-    pub fn new<S: ToString>(name: S, ty: S, is_pub: bool) -> Self {
+    pub fn new<S: ToString>(name: S, ty: S) -> Self {
         let mut f = Field::default();
         f.name = name.to_string();
         f.ty = ty.to_string();
-        f.is_pub = is_pub;
         f
     }
 
@@ -58,6 +57,10 @@ impl Field {
     /// Add multiple documentation lines at once.
     pub fn add_docs<S: ToString, I: IntoIterator<Item = S>>(&mut self, docs: I) {
         docs.into_iter().for_each(|d| self.add_doc(d))
+    }
+    /// Set if this is public
+    pub fn set_is_pub(&mut self, is_pub: bool) {
+        self.is_pub = is_pub;
     }
 }
 

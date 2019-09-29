@@ -33,7 +33,6 @@
 use serde::Serialize;
 
 use crate::*;
-use std::env::var;
 use tera::{Context, Tera};
 
 /// Represent an `enum` object

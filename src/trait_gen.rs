@@ -14,10 +14,10 @@ use tera::{Context, Tera};
 /// -------
 /// ```
 /// use proffer::*;
-/// let mut tr8t = Trait::new("Foo", true);
-/// tr8t.add_signature(FunctionSignature::new("bar", false));
+/// let mut tr8t = Trait::new("Foo");
+/// tr8t.add_signature(FunctionSignature::new("bar"));
 /// let expected = r#"
-///     pub trait Foo
+///     trait Foo
 ///     {
 ///         fn bar() -> ();
 ///     }
@@ -37,16 +37,20 @@ pub struct Trait {
 
 impl Trait {
     /// Create a new `trait`
-    pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
+    pub fn new<S: ToString>(name: S) -> Self {
         let mut t = Self::default();
         t.name = name.to_string();
-        t.is_pub = is_pub;
         t
     }
 
     /// Add a new signature requirement to this trait.
     pub fn add_signature(&mut self, signature: FunctionSignature) {
         self.signatures.push(signature)
+    }
+
+    /// Set if this is a `pub` trait
+    pub fn set_is_pub(&mut self, is_pub: bool) {
+        self.is_pub = is_pub;
     }
 
     /// Add a generic bound to this trait.

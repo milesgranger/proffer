@@ -9,8 +9,8 @@ fn normalize_whitespace(s: &str) -> String {
 
 #[test]
 fn impl_basic_gen_with_trait() {
-    let mut ipl = Impl::new("That", Some(Trait::new("This", true)));
-
+    let mut ipl = Impl::new("That");
+    ipl.set_impl_trait(Some(Trait::new("This")));
     let expected = r#"
         impl This for That
         {
@@ -35,7 +35,7 @@ fn impl_basic_gen_with_trait() {
         }
     "#;
 
-    ipl.add_function(Function::new("foo", false));
+    ipl.add_function(Function::new("foo"));
 
     let src_code = ipl.generate();
     println!("{}", &src_code);
@@ -48,7 +48,7 @@ fn impl_basic_gen_with_trait() {
 
 #[test]
 fn impl_basic_gen_without_trait() {
-    let ipl = Impl::new("That", None);
+    let ipl = Impl::new("That");
 
     let expected = r#"
         impl That
@@ -67,10 +67,11 @@ fn impl_basic_gen_without_trait() {
 
 #[test]
 fn impl_with_generics() {
-    let mut ipl = Impl::new("That", None);
+    let mut ipl = Impl::new("That");
     ipl.add_generic(Generic::new("T", vec!["ToString"]));
 
-    let mut method = Function::new("foo", true);
+    let mut method = Function::new("foo");
+    method.set_is_pub(true);
     method.add_parameter(Parameter::new("bar1", "T"));
     method.add_parameter(Parameter::new("bar2", "S"));
     method.set_return_ty("T");

@@ -20,10 +20,9 @@ pub struct Struct {
 
 impl Struct {
     /// Create a new `Struct`
-    pub fn new<S: ToString>(name: S, is_pub: bool) -> Self {
+    pub fn new<S: ToString>(name: S) -> Self {
         let mut s = Struct::default();
         s.name = name.to_string();
-        s.is_pub = is_pub;
         s
     }
 
@@ -35,6 +34,11 @@ impl Struct {
     /// Add a trait bound to this struct
     pub fn add_generic(&mut self, generic: Generic) {
         self.generics.add_generic(generic)
+    }
+
+    /// Set if this struct is `pub`
+    pub fn set_is_pub(&mut self, is_pub: bool) {
+        self.is_pub = is_pub;
     }
 }
 
