@@ -2,7 +2,7 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::{Field, Generic, Generics};
+use crate::{Field, Generic, Generics, Impl};
 
 #[derive(Default, Serialize)]
 pub struct Struct {
@@ -25,7 +25,7 @@ impl Struct {
         self.fields.push(field)
     }
     pub fn add_generic(&mut self, generic: Generic) {
-        self.generics.push(generic)
+        self.generics.add_generic(generic)
     }
 }
 
@@ -34,7 +34,8 @@ impl SrcCode for Struct {
         let template = r#"
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }} {
             {% for field in fields %}{{ field }}{% endfor %}
-        }"#;
+        }
+        "#;
         let mut context = Context::new();
         context.insert("struct", &self);
 

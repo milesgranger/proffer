@@ -1,10 +1,7 @@
-use std::collections::HashMap;
-
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
 use crate::traits::SrcCode;
-use crate::Field;
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct Generic {
@@ -30,8 +27,14 @@ impl Generics {
     pub fn new(generics: Vec<Generic>) -> Self {
         Self { generics }
     }
-    pub fn push(&mut self, generic: Generic) {
+    pub fn add_generic(&mut self, generic: Generic) {
         self.generics.push(generic)
+    }
+    pub fn len(&self) -> usize {
+        self.generics.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 }
 

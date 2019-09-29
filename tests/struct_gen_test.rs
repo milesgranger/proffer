@@ -8,7 +8,7 @@ fn normalize_whitespace(s: &str) -> String {
 }
 
 #[test]
-fn test_basic_gen() {
+fn basic_gen() {
     let mut struct_ = Struct::new("Basic", true);
 
     let mut f = Field::new("field1", "String", true);
@@ -35,7 +35,7 @@ fn test_basic_gen() {
 }
 
 #[test]
-fn test_generic_gen() {
+fn generic_gen() {
     let mut s = Struct::new("Generic", true);
     s.add_generic(Generic::new("T", vec!["ToString"]));
     s.add_generic(Generic::new("S", vec!["ToString", "Number"]));
@@ -58,4 +58,6 @@ fn test_generic_gen() {
         normalize_whitespace(&src_code),
         normalize_whitespace(&expected)
     );
+
+    // Add basic impl block.
 }
