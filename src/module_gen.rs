@@ -62,8 +62,10 @@ pub struct Module {
     impls: Vec<Impl>,
     enums: Vec<Enum>,
     docs: Vec<String>,
+    sub_modules: Vec<Module>,
     inner_annotations: Vec<String>,
     outer_annotations: Vec<String>,
+    use_stmts: Vec<String>,
 }
 
 impl Module {
@@ -76,6 +78,11 @@ impl Module {
     /// Set if this module is public
     pub fn set_is_pub(mut self, is_pub: bool) -> Self {
         self.is_pub = is_pub;
+        self
+    }
+    /// Add submodule
+    pub fn add_submodule(mut self, module: Module) -> Self {
+        self.sub_modules.push(module);
         self
     }
     /// Add a function to the module
@@ -96,6 +103,11 @@ impl Module {
     /// Add an impl block to the module
     pub fn add_impl(mut self, iml: Impl) -> Self {
         self.impls.push(iml);
+        self
+    }
+    /// Add a `use` statement or similar module level statements
+    pub fn add_use_statement<S: ToString>(mut self, stmt: S) -> Self {
+        self.use_stmts.push(stmt.to_string());
         self
     }
     /// Add outer module annotations
@@ -126,9 +138,12 @@ impl SrcCode for Module {
         {% for annotation in self.outer_annotations %}{{ annotation }}{% endfor %}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
+            {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
+
             {% for annotation in self.inner_annotations %}{{ annotation }}{% endfor %}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
             {% for obj in objs %}{{ obj }}{% endfor %}
+            {% for sub_mod in submodules %}{{ sub_mod }}{% endfor %}
         }
         "#;
 
@@ -141,8 +156,16 @@ impl SrcCode for Module {
         &self.structs.iter().for_each(|v| objs.push(v.generate()));
         &self.impls.iter().for_each(|v| objs.push(v.generate()));
         &self.enums.iter().for_each(|v| objs.push(v.generate()));
-
         ctx.insert("objs", &objs);
+
+        ctx.insert(
+            "submodules",
+            &self
+                .sub_modules
+                .iter()
+                .map(|m| m.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }

@@ -24,6 +24,7 @@ pub struct Function {
 pub struct FunctionSignature {
     name: String,
     is_pub: bool,
+    is_async: bool,
     parameters: Vec<Parameter>,
     generics: Generics,
     return_ty: Option<String>,
@@ -35,6 +36,12 @@ impl FunctionSignature {
         let mut f = Self::default();
         f.name = name.to_string();
         f
+    }
+
+    /// Set this function as `async`
+    pub fn set_is_async(mut self, is_async: bool) -> Self {
+        self.is_async = is_async;
+        self
     }
 
     /// Add a parameter to this signature
