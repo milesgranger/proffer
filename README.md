@@ -22,7 +22,7 @@ See the documentation for more examples
 ```rust
 use proffer::*;
 let ipl = Impl::new("That")
-    .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
+    .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]).to_owned())
     .add_function(
         Function::new("foo")
             .set_is_pub(true)
@@ -30,8 +30,9 @@ let ipl = Impl::new("That")
             .add_parameter(Parameter::new("bar2", "S"))
             .set_return_ty("T")
             .add_generic(Generic::new("S"))
-            .set_body("bar"),
-    );
+            .set_body("bar")
+            .to_owned()
+    ).to_owned();
 
 let expected = r#"
     impl<T> That<T>
