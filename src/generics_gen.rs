@@ -10,7 +10,7 @@ use tera::{Context, Tera};
 use crate::traits::SrcCode;
 
 /// Represent a single trait bound
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
     pub(crate) generic: String,
     pub(crate) traits: Vec<String>,
@@ -24,14 +24,14 @@ impl Generic {
         g
     }
     /// Set the trait bounds of this generic
-    pub fn add_trait_bounds<S: ToString>(mut self, traits: Vec<S>) -> Self {
+    pub fn add_trait_bounds<S: ToString>(&mut self, traits: Vec<S>) -> &mut Self {
         self.traits.extend(traits.iter().map(|t| t.to_string()));
         self
     }
 }
 
 /// Represent a collection of trait bounds
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generics {
     pub(crate) generics: Vec<Generic>,
 }
@@ -43,7 +43,7 @@ impl Generics {
     }
 
     /// Add a `Generic`
-    pub fn add_generic(mut self, generic: Generic) -> Self {
+    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
         self.generics.push(generic);
         self
     }

@@ -9,7 +9,7 @@ use crate::{Function, Generic, Generics, Trait};
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Clone)]
 pub struct Impl {
     generics: Generics,
     impl_trait: Option<Trait>,
@@ -26,20 +26,20 @@ impl Impl {
     }
 
     /// Set if this `impl` is implementing a `Trait` for an object.
-    pub fn set_impl_trait(mut self, impl_trait: Option<Trait>) -> Self {
+    pub fn set_impl_trait(&mut self, impl_trait: Option<Trait>) -> &mut Self {
         self.impl_trait = impl_trait;
         self
     }
 
     /// Add a function to this `Impl` block
-    pub fn add_function(mut self, func: Function) -> Self {
+    pub fn add_function(&mut self, func: Function) -> &mut Self {
         self.functions.push(func);
         self
     }
 
     /// Add a generic to this `Impl` block
-    pub fn add_generic(mut self, generic: Generic) -> Self {
-        self.generics = self.generics.add_generic(generic);
+    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
+        self.generics.add_generic(generic);
         self
     }
 }

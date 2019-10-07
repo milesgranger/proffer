@@ -5,7 +5,8 @@ fn gen_enum_basic() {
     let e = Enum::new("Foo")
         .add_variant(Variant::new("A"))
         .add_variant(Variant::new("B"))
-        .set_is_pub(true);
+        .set_is_pub(true)
+        .to_owned();
 
     let src_code = e.generate();
     println!("{}", &src_code);
@@ -24,8 +25,9 @@ fn gen_enum_basic() {
 fn gen_enum_with_generic() {
     let e = Enum::new("Foo")
         .add_variant(Variant::new("A"))
-        .add_variant(Variant::new("B").set_inner(Some("(T)")))
-        .add_generic(Generic::new("T"));
+        .add_variant(Variant::new("B").set_inner(Some("(T)")).to_owned())
+        .add_generic(Generic::new("T"))
+        .to_owned();
 
     let src_code = e.generate();
     println!("{}", &src_code);

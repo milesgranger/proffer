@@ -9,7 +9,9 @@ fn normalize_whitespace(s: &str) -> String {
 
 #[test]
 fn impl_basic_gen_with_trait() {
-    let ipl = Impl::new("That").set_impl_trait(Some(Trait::new("This")));
+    let mut ipl = Impl::new("That")
+        .set_impl_trait(Some(Trait::new("This")))
+        .to_owned();
     let expected = r#"
         impl This for That
         {
@@ -67,7 +69,11 @@ fn impl_basic_gen_without_trait() {
 #[test]
 fn impl_with_generics() {
     let ipl = Impl::new("That")
-        .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
+        .add_generic(
+            Generic::new("T")
+                .add_trait_bounds(vec!["ToString"])
+                .to_owned(),
+        )
         .add_function(
             Function::new("foo")
                 .set_is_pub(true)
@@ -75,8 +81,10 @@ fn impl_with_generics() {
                 .add_parameter(Parameter::new("bar2", "S"))
                 .set_return_ty("T")
                 .add_generic(Generic::new("S"))
-                .set_body("bar"),
-        );
+                .set_body("bar")
+                .to_owned(),
+        )
+        .to_owned();
 
     let expected = r#"
         impl<T> That<T>

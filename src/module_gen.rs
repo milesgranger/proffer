@@ -14,7 +14,8 @@
 //!     .add_impl(Impl::new("Thingy"))
 //!     .add_outer_annotation("#[special_outer_annotation]")
 //!     .add_inner_annotation("#![special_inner_annotation]")
-//!     .add_doc("//! Module level docs");
+//!     .add_doc("//! Module level docs")
+//!     .to_owned();
 //!
 //! let src_code = m.generate();
 //!
@@ -52,7 +53,7 @@ use tera::{Context, Tera};
 use crate::*;
 
 /// Represent a module of code
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct Module {
     name: String,
     is_pub: bool,
@@ -76,57 +77,57 @@ impl Module {
         m
     }
     /// Set if this module is public
-    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
+    pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
         self
     }
     /// Add submodule
-    pub fn add_submodule(mut self, module: Module) -> Self {
+    pub fn add_submodule(&mut self, module: Module) -> &mut Self {
         self.sub_modules.push(module);
         self
     }
     /// Add a function to the module
-    pub fn add_function(mut self, func: Function) -> Self {
+    pub fn add_function(&mut self, func: Function) -> &mut Self {
         self.functions.push(func);
         self
     }
     /// Add a trait to the module
-    pub fn add_trait(mut self, tr8t: Trait) -> Self {
+    pub fn add_trait(&mut self, tr8t: Trait) -> &mut Self {
         self.traits.push(tr8t);
         self
     }
     /// Add a struct to the module
-    pub fn add_struct(mut self, stct: Struct) -> Self {
+    pub fn add_struct(&mut self, stct: Struct) -> &mut Self {
         self.structs.push(stct);
         self
     }
     /// Add an impl block to the module
-    pub fn add_impl(mut self, iml: Impl) -> Self {
+    pub fn add_impl(&mut self, iml: Impl) -> &mut Self {
         self.impls.push(iml);
         self
     }
     /// Add a `use` statement or similar module level statements
-    pub fn add_use_statement<S: ToString>(mut self, stmt: S) -> Self {
+    pub fn add_use_statement<S: ToString>(&mut self, stmt: S) -> &mut Self {
         self.use_stmts.push(stmt.to_string());
         self
     }
     /// Add outer module annotations
-    pub fn add_outer_annotation<S: ToString>(mut self, ann: S) -> Self {
+    pub fn add_outer_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
         self.outer_annotations.push(ann.to_string());
         self
     }
     /// Add inner module annotations
-    pub fn add_inner_annotation<S: ToString>(mut self, ann: S) -> Self {
+    pub fn add_inner_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
         self.inner_annotations.push(ann.to_string());
         self
     }
     /// Add a doc string to this module
-    pub fn add_doc<S: ToString>(mut self, doc: S) -> Self {
+    pub fn add_doc<S: ToString>(&mut self, doc: S) -> &mut Self {
         self.docs.push(doc.to_string());
         self
     }
     /// Add an enum to the module
-    pub fn add_enum(mut self, enumm: Enum) -> Self {
+    pub fn add_enum(&mut self, enumm: Enum) -> &mut Self {
         self.enums.push(enumm);
         self
     }

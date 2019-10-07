@@ -15,7 +15,8 @@ use tera::{Context, Tera};
 /// ```
 /// use proffer::*;
 /// let tr8t = Trait::new("Foo")
-///     .add_signature(FunctionSignature::new("bar"));
+///     .add_signature(FunctionSignature::new("bar"))
+///     .to_owned();
 /// let expected = r#"
 ///     trait Foo
 ///     {
@@ -27,7 +28,7 @@ use tera::{Context, Tera};
 ///     norm_whitespace(tr8t.generate().as_str())
 /// )
 /// ```
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Clone)]
 pub struct Trait {
     pub(crate) name: String,
     pub(crate) is_pub: bool,
@@ -44,20 +45,20 @@ impl Trait {
     }
 
     /// Add a new signature requirement to this trait.
-    pub fn add_signature(mut self, signature: FunctionSignature) -> Self {
+    pub fn add_signature(&mut self, signature: FunctionSignature) -> &mut Self {
         self.signatures.push(signature);
         self
     }
 
     /// Set if this is a `pub` trait
-    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
+    pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
         self
     }
 
     /// Add a generic bound to this trait.
-    pub fn add_generic(mut self, generic: Generic) -> Self {
-        self.generics = self.generics.add_generic(generic);
+    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
+        self.generics.add_generic(generic);
         self
     }
 }

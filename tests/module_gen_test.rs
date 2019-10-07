@@ -4,7 +4,7 @@ use proffer::*;
 fn test_module_basic() {
     let m = Module::new("foo")
         .set_is_pub(true)
-        .add_trait(Trait::new("Bar").set_is_pub(true))
+        .add_trait(Trait::new("Bar").set_is_pub(true).to_owned())
         .add_function(Function::new("foo"))
         .add_struct(Struct::new("Thingy"))
         .add_impl(Impl::new("Thingy"))
@@ -12,7 +12,8 @@ fn test_module_basic() {
         .add_inner_annotation("#![special_inner_annotation]")
         .add_doc("//! Module level docs")
         .add_use_statement("use super::*;")
-        .add_enum(Enum::new("EnumThingy"));
+        .add_enum(Enum::new("EnumThingy"))
+        .to_owned();
     let src_code = m.generate();
 
     let expected = r#"
@@ -46,18 +47,22 @@ fn test_module_basic() {
 
 #[test]
 fn test_module_submodule() {
-    let m = Module::new("upper_module").set_is_pub(true).add_submodule(
-        Module::new("foo")
-            .set_is_pub(true)
-            .add_trait(Trait::new("Bar").set_is_pub(true))
-            .add_function(Function::new("foo"))
-            .add_struct(Struct::new("Thingy"))
-            .add_impl(Impl::new("Thingy"))
-            .add_outer_annotation("#[special_outer_annotation]")
-            .add_inner_annotation("#![special_inner_annotation]")
-            .add_doc("//! Module level docs")
-            .add_enum(Enum::new("EnumThingy")),
-    );
+    let m = Module::new("upper_module")
+        .set_is_pub(true)
+        .add_submodule(
+            Module::new("foo")
+                .set_is_pub(true)
+                .add_trait(Trait::new("Bar").set_is_pub(true).to_owned())
+                .add_function(Function::new("foo"))
+                .add_struct(Struct::new("Thingy"))
+                .add_impl(Impl::new("Thingy"))
+                .add_outer_annotation("#[special_outer_annotation]")
+                .add_inner_annotation("#![special_inner_annotation]")
+                .add_doc("//! Module level docs")
+                .add_enum(Enum::new("EnumThingy"))
+                .to_owned(),
+        )
+        .to_owned();
     let src_code = m.generate();
 
     let expected = r#"

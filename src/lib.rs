@@ -10,7 +10,7 @@
 //! use proffer::*;
 //!
 //! let ipl = Impl::new("That")
-//!     .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
+//!     .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]).to_owned())
 //!     .add_function(
 //!         Function::new("foo")
 //!             .set_is_pub(true)
@@ -19,7 +19,8 @@
 //!             .set_return_ty("T")
 //!             .add_generic(Generic::new("S"))
 //!             .set_body("bar1")
-//!     );
+//!             .to_owned()
+//!     ).to_owned();
 //!
 //! let expected = r#"
 //!     impl<T> That<T>
