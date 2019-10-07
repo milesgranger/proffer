@@ -9,8 +9,9 @@
 //!
 //! let e = Enum::new("Foo")
 //!     .add_variant(Variant::new("A"))
-//!     .add_variant(Variant::new("B").set_inner(Some("(T)")))
-//!     .add_generic(Generic::new("T"));
+//!     .add_variant(Variant::new("B").set_inner(Some("(T)")).to_owned())
+//!     .add_generic(Generic::new("T"))
+//!     .to_owned();
 //!
 //! let src_code = e.generate();
 //! let expected = r#"
@@ -31,7 +32,7 @@ use crate::*;
 use tera::{Context, Tera};
 
 /// Represent an `enum` object
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct Enum {
     name: String,
     generics: Generics,
@@ -40,7 +41,7 @@ pub struct Enum {
 }
 
 /// Represent an enum variant/arm
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct Variant {
     name: String,
     inner: Option<String>,
@@ -54,18 +55,18 @@ impl Enum {
         e
     }
     /// Set if this is public
-    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
+    pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
         self
     }
     /// Add a variant
-    pub fn add_variant(mut self, variant: Variant) -> Self {
+    pub fn add_variant(&mut self, variant: Variant) -> &mut Self {
         self.variants.push(variant);
         self
     }
     /// Add a generic bound to this Enum
-    pub fn add_generic(mut self, generic: Generic) -> Self {
-        self.generics = self.generics.add_generic(generic);
+    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
+        self.generics.add_generic(generic);
         self
     }
 }
@@ -78,7 +79,7 @@ impl Variant {
         v
     }
     /// Set the inner portion of this variant, expected to be valid Rust source code.
-    pub fn set_inner<S: ToString>(mut self, inner: Option<S>) -> Self {
+    pub fn set_inner<S: ToString>(&mut self, inner: Option<S>) -> &mut Self {
         self.inner = inner.map(|s| s.to_string());
         self
     }

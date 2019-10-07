@@ -16,9 +16,11 @@ fn basic_gen() {
                 .set_is_pub(true)
                 .add_annotation("#[serde = w]")
                 .add_doc("/// Some example documentation")
-                .add_docs(vec!["/// Another line", "/// and another"]),
+                .add_docs(vec!["/// Another line", "/// and another"])
+                .to_owned(),
         )
-        .add_field(Field::new("field2", "usize"));
+        .add_field(Field::new("field2", "usize"))
+        .to_owned();
     let expected = r#"
         pub struct Basic {
             /// Some example documentation
@@ -42,10 +44,19 @@ fn basic_gen() {
 fn generic_gen() {
     let s = Struct::new("Generic")
         .set_is_pub(true)
-        .add_generic(Generic::new("T").add_trait_bounds(vec!["ToString"]))
-        .add_generic(Generic::new("S").add_trait_bounds(vec!["ToString", "Number"]))
+        .add_generic(
+            Generic::new("T")
+                .add_trait_bounds(vec!["ToString"])
+                .to_owned(),
+        )
+        .add_generic(
+            Generic::new("S")
+                .add_trait_bounds(vec!["ToString", "Number"])
+                .to_owned(),
+        )
         .add_field(Field::new("field1", "S"))
-        .add_field(Field::new("field2", "T"));
+        .add_field(Field::new("field2", "T"))
+        .to_owned();
     let src_code = s.generate();
     println!("{}", &src_code);
     let expected = r#"

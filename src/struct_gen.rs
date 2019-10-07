@@ -9,7 +9,7 @@ use tera::{Context, Tera};
 use crate::*;
 
 /// Represents a `struct` in source code.
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Clone)]
 pub struct Struct {
     is_pub: bool,
     name: String,
@@ -27,19 +27,19 @@ impl Struct {
     }
 
     /// Add a new field to this struct
-    pub fn add_field(mut self, field: Field) -> Self {
+    pub fn add_field(&mut self, field: Field) -> &mut Self {
         self.fields.push(field);
         self
     }
 
     /// Add a trait bound to this struct
-    pub fn add_generic(mut self, generic: Generic) -> Self {
-        self.generics = self.generics.add_generic(generic);
+    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
+        self.generics.add_generic(generic);
         self
     }
 
     /// Set if this struct is `pub`
-    pub fn set_is_pub(mut self, is_pub: bool) -> Self {
+    pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
         self
     }
