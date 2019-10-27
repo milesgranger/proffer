@@ -105,3 +105,24 @@ fn function_with_generic_no_bounds() {
         normalize_whitespace(&src_code)
     );
 }
+
+#[test]
+fn function_with_async() {
+    let function = Function::new("foo")
+        .set_is_pub(true)
+        .set_is_async(true)
+        .to_owned();
+
+    let expected = r#"
+        pub async fn foo() -> ()
+        {
+        }
+    "#;
+
+    let src_code = function.generate();
+    println!("{}", &src_code);
+    assert_eq!(
+        normalize_whitespace(expected),
+        normalize_whitespace(&src_code)
+    );
+}

@@ -78,7 +78,7 @@ impl FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
-        {% if self.is_pub %}pub {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
+        {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
                 {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
                 {% endfor %}{% endif %}"#;
@@ -165,6 +165,11 @@ impl Function {
     /// Set if this function is public
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.signature.set_is_pub(is_pub);
+        self
+    }
+    /// Set if this function is async
+    pub fn set_is_async(&mut self, is_async: bool) -> &mut Self {
+        self.signature.set_is_async(is_async);
         self
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
