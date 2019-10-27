@@ -145,3 +145,32 @@ fn function_gen_parameter_annotations() {
         norm_whitespace(&src_code)
     );
 }
+
+#[test]
+fn function_with_annotations() {
+    let function = Function::new("foo")
+        .add_outer_annotation("#[foo]")
+        .add_outer_annotation("#[bar]")
+        .add_inner_annotation("#![foo]")
+        .add_inner_annotation("#![bar]")
+        .set_body("//body")
+        .to_owned();
+
+    let expected = r#"
+        #[foo]
+        #[bar]
+        fn foo() -> ()
+        {
+            #![foo]
+            #![bar]
+            //body
+        }
+    "#;
+
+    let src_code = function.generate();
+    println!("{}", &src_code);
+    assert_eq!(
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
+    );
+}

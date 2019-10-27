@@ -28,14 +28,16 @@ pub struct FunctionSignature {
     parameters: Vec<Parameter>,
     generics: Generics,
     return_ty: Option<String>,
+    annotations: Vec<String>,
 }
 
 impl FunctionSignature {
     /// Create a new function signature.
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut f = Self::default();
-        f.name = name.to_string();
-        f
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
 
     /// Set this function as `async`
@@ -53,6 +55,12 @@ impl FunctionSignature {
     /// Add a generic to this signature
     pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
         self.generics.add_generic(generic);
+        self
+    }
+
+    /// Add a annotation to this signature
+    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
+        self.annotations.push(annotation.to_string());
         self
     }
 
@@ -78,6 +86,8 @@ impl FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
+        {{ self.annotations | join(sep="
+        ") }}
         {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
                 {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
@@ -115,36 +125,37 @@ impl SrcCode for FunctionSignature {
 #[derive(Default, Serialize, Clone)]
 pub struct FunctionBody {
     body: String,
+    annotations: Vec<String>,
+}
+
+impl FunctionBody {
+    /// Add a annotation to this body
+    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
+        self.annotations.push(annotation.to_string());
+        self
+    }
 }
 
 impl SrcCode for FunctionBody {
     fn generate(&self) -> String {
         let template = r#"
-            {{ body }}
+            {{ self.annotations | join(sep="
+            ") }}
+            {{ self.body }}
         "#;
         let mut ctx = Context::new();
-        ctx.insert("body", &self.body);
+        ctx.insert("self", &self);
         Tera::one_off(template, &ctx, false).unwrap()
-    }
-}
-
-impl<S> From<S> for FunctionBody
-where
-    S: ToString,
-{
-    fn from(body: S) -> FunctionBody {
-        FunctionBody {
-            body: body.to_string(),
-        }
     }
 }
 
 impl Function {
     /// Create a new function
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut f = Self::default();
-        f.signature.name = name.to_string();
-        f
+        Self {
+            signature: FunctionSignature::new(name),
+            ..Self::default()
+        }
     }
 
     /// Add a new parameter to this function
@@ -155,6 +166,16 @@ impl Function {
     /// Add a new trait bound generic to this function
     pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
         self.signature.generics.add_generic(generic);
+        self
+    }
+    /// Add outer function annotations
+    pub fn add_outer_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
+        self.signature.add_annotation(ann);
+        self
+    }
+    /// Add outer function annotations
+    pub fn add_inner_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
+        self.body.add_annotation(ann);
         self
     }
     /// Set the return type of this function
@@ -173,8 +194,8 @@ impl Function {
         self
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
-    pub fn set_body<S: Into<FunctionBody>>(&mut self, body: S) -> &mut Self {
-        self.body = body.into();
+    pub fn set_body<S: ToString>(&mut self, body: S) -> &mut Self {
+        self.body.body = body.to_string();
         self
     }
 }
