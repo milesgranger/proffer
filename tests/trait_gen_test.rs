@@ -83,3 +83,33 @@ fn gen_with_generics() {
         normalize_whitespace(&src_code)
     );
 }
+
+#[test]
+fn gen_with_associated_types() {
+    let tr8t = Trait::new("Foo")
+        .set_is_pub(true)
+        .add_associated_type(AssociatedTypeDeclaration::new("FOO"))
+        .add_associated_type(AssociatedTypeDeclaration::new("BAR")
+            .add_trait_bounds(vec!["Debug"])
+            .to_owned())
+        .add_associated_type(AssociatedTypeDeclaration::new("BAZ")
+            .add_trait_bounds(vec!["Debug", "Default"])
+            .to_owned())
+        .to_owned();
+    let expected = r#"
+        pub trait Foo
+        {
+            type FOO;
+            type BAR: Debug;
+            type BAZ: Debug + Default;
+        }
+    "#;
+
+    let src_code = tr8t.generate();
+    println!("{}", &src_code);
+
+    assert_eq!(
+        normalize_whitespace(expected),
+        normalize_whitespace(&src_code)
+    );
+}

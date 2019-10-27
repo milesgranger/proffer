@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{FunctionSignature, Generic, Generics};
+use crate::{FunctionSignature, Generic, Generics, AssociatedTypeDeclaration};
 use tera::{Context, Tera};
 
 /// Represents a `trait` block.
@@ -34,6 +34,7 @@ pub struct Trait {
     pub(crate) is_pub: bool,
     generics: Generics,
     signatures: Vec<FunctionSignature>,
+    associated_types: Vec<AssociatedTypeDeclaration>
 }
 
 impl Trait {
@@ -61,6 +62,12 @@ impl Trait {
         self.generics.add_generic(generic);
         self
     }
+
+    /// Add a associated type to this trait.
+    pub fn add_associated_type(&mut self, associated_type: AssociatedTypeDeclaration) -> &mut Self {
+        self.associated_types.push(associated_type);
+        self
+    }
 }
 
 impl SrcCode for Trait {
@@ -68,6 +75,7 @@ impl SrcCode for Trait {
         let template = r#"
             {% if self.is_pub %}pub {% endif %}trait {{ self.name }}{% if has_generics %}{{ generic_bounds }}{% endif %}
             {
+                {% for associated_type in associated_types %}{{ associated_type }}{% endfor %}
                 {% for signature in signatures %}{{ signature }};{% endfor %}
             }
         "#;
@@ -79,6 +87,14 @@ impl SrcCode for Trait {
                 .signatures
                 .iter()
                 .map(|s| s.generate())
+                .collect::<Vec<String>>(),
+        );
+        context.insert(
+            "associated_types",
+            &self
+                .associated_types
+                .iter()
+                .map(|t| t.generate())
                 .collect::<Vec<String>>(),
         );
         context.insert("has_generics", &!self.generics.is_empty());

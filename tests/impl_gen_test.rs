@@ -108,3 +108,27 @@ fn impl_with_generics() {
         normalize_whitespace(&src_code)
     )
 }
+
+#[test]
+fn impl_with_associated_types() {
+    let ipl = Impl::new("That")
+        .set_impl_trait(Some(Trait::new("This")))
+        .add_associated_type(AssociatedTypeDefinition::new("FOO", "Bar"))
+        .add_associated_type(AssociatedTypeDefinition::new("BAR", "Foo"))
+        .to_owned();
+    let expected = r#"
+        impl This for That
+        {
+            type FOO = Bar;
+            type BAR = Foo;
+        }
+    "#;
+
+    let src_code = ipl.generate();
+    println!("{}", &src_code);
+
+    assert_eq!(
+        normalize_whitespace(expected),
+        normalize_whitespace(&src_code)
+    );
+}

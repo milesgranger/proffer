@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{Function, Generic, Generics, Trait};
+use crate::{Function, Generic, Generics, Trait, AssociatedTypeDefinition};
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
@@ -15,6 +15,7 @@ pub struct Impl {
     impl_trait: Option<Trait>,
     functions: Vec<Function>,
     obj_name: String,
+    associated_types: Vec<AssociatedTypeDefinition>
 }
 
 impl Impl {
@@ -42,6 +43,12 @@ impl Impl {
         self.generics.add_generic(generic);
         self
     }
+
+    /// Add a associated type to this `Impl` block
+    pub fn add_associated_type(&mut self, associated_type: AssociatedTypeDefinition) -> &mut Self {
+        self.associated_types.push(associated_type);
+        self
+    }
 }
 
 impl SrcCode for Impl {
@@ -54,6 +61,7 @@ impl SrcCode for Impl {
                     {% endfor %}
                 {% endif %}
             {
+                {% for associated_type in associated_types %}{{ associated_type }}{% endfor %}
                 {% for function in functions %}
                     {{ function }}
                 {% endfor %}
@@ -87,6 +95,14 @@ impl SrcCode for Impl {
                 .functions
                 .iter()
                 .map(|f| f.generate())
+                .collect::<Vec<String>>(),
+        );
+        context.insert(
+            "associated_types",
+            &self
+                .associated_types
+                .iter()
+                .map(|a| a.generate())
                 .collect::<Vec<String>>(),
         );
         Tera::one_off(template, &context, false).unwrap()
