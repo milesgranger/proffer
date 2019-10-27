@@ -152,11 +152,11 @@ impl SrcCode for Module {
         ctx.insert("self", &self);
 
         let mut objs: Vec<String> = vec![];
-        &self.traits.iter().for_each(|v| objs.push(v.generate()));
-        &self.functions.iter().for_each(|v| objs.push(v.generate()));
-        &self.structs.iter().for_each(|v| objs.push(v.generate()));
-        &self.impls.iter().for_each(|v| objs.push(v.generate()));
-        &self.enums.iter().for_each(|v| objs.push(v.generate()));
+        self.traits.iter().for_each(|v| objs.push(v.generate()));
+        self.functions.iter().for_each(|v| objs.push(v.generate()));
+        self.structs.iter().for_each(|v| objs.push(v.generate()));
+        self.impls.iter().for_each(|v| objs.push(v.generate()));
+        self.enums.iter().for_each(|v| objs.push(v.generate()));
         ctx.insert("objs", &objs);
 
         ctx.insert(

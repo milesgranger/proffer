@@ -75,8 +75,7 @@ impl SrcCode for Impl {
             &self
                 .impl_trait
                 .as_ref()
-                .map(|t| t.name.clone())
-                .unwrap_or("".to_string()),
+                .map_or_else(|| "".to_string(), |t| t.name.clone()),
         );
         context.insert("has_generics", &!self.generics.is_empty());
         context.insert("generics", &self.generics.generics);

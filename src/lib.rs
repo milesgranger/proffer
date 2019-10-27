@@ -71,9 +71,10 @@ pub use traits::SrcCode;
 
 /// Helper function throughout tests and documentation
 /// for comparing expected source code generated.
+#[must_use]
 pub fn norm_whitespace(s: &str) -> String {
-    s.split("\n")
-        .map(|l| l.trim())
-        .filter(|l| l.len() > 0)
+    s.split('\n')
+        .map(str::trim)
+        .filter(|l| !l.is_empty())
         .collect::<String>()
 }

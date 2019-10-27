@@ -28,6 +28,11 @@ jobs:
       - run:
           name: Run all tests
           command: cargo test --all
+      - run:
+          name: Run clippy
+          command: |
+              rustup component add clippy
+              cargo clippy --all -- -D warnings
 
 workflows:
   version: 2.1

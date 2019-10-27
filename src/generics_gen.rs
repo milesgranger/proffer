@@ -61,7 +61,7 @@ impl Generics {
 
 impl SrcCode for Generics {
     fn generate(&self) -> String {
-        if self.generics.len() > 0 {
+        if !self.generics.is_empty() {
             let template = r#"<{{ generic_keys | join(sep=", ") }}>
                 where
                     {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},

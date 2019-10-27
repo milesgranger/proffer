@@ -6,5 +6,6 @@
 /// raw source code.
 pub trait SrcCode {
     /// Given current configuration, give the resulting source code.
+    #[must_use]
     fn generate(&self) -> String;
 }
