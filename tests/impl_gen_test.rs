@@ -1,12 +1,5 @@
 use proffer::*;
 
-fn normalize_whitespace(s: &str) -> String {
-    s.split("\n")
-        .map(|l| l.trim())
-        .filter(|l| l.len() > 0)
-        .collect::<String>()
-}
-
 #[test]
 fn impl_basic_gen_with_trait() {
     let mut ipl = Impl::new("That")
@@ -22,8 +15,8 @@ fn impl_basic_gen_with_trait() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 
     // Add a function to the impl
@@ -42,8 +35,8 @@ fn impl_basic_gen_with_trait() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -61,8 +54,8 @@ fn impl_basic_gen_without_trait() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     )
 }
 
@@ -104,8 +97,8 @@ fn impl_with_generics() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     )
 }
 
@@ -128,7 +121,7 @@ fn impl_with_associated_types() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }

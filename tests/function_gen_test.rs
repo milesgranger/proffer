@@ -1,12 +1,5 @@
 use proffer::*;
 
-fn normalize_whitespace(s: &str) -> String {
-    s.split("\n")
-        .map(|l| l.trim())
-        .filter(|l| l.len() > 0)
-        .collect::<String>()
-}
-
 #[test]
 fn function_gen_basic() {
     let function = Function::new("foo");
@@ -20,8 +13,8 @@ fn function_gen_basic() {
     let src_code = function.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -41,8 +34,8 @@ fn function_gen_parameters() {
     let src_code = function.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -75,8 +68,8 @@ fn function_with_generic() {
     let src_code = function.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -101,8 +94,8 @@ fn function_with_generic_no_bounds() {
     let src_code = function.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -122,7 +115,7 @@ fn function_with_async() {
     let src_code = function.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }

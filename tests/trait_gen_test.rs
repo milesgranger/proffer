@@ -1,12 +1,5 @@
 use proffer::*;
 
-fn normalize_whitespace(s: &str) -> String {
-    s.split("\n")
-        .map(|l| l.trim())
-        .filter(|l| l.len() > 0)
-        .collect::<String>()
-}
-
 #[test]
 fn basic_gen() {
     let tr8t = Trait::new("Foo").set_is_pub(true).to_owned();
@@ -20,8 +13,8 @@ fn basic_gen() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -44,8 +37,8 @@ fn gen_with_method_signatures() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -79,8 +72,8 @@ fn gen_with_generics() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }
 
@@ -109,7 +102,7 @@ fn gen_with_associated_types() {
     println!("{}", &src_code);
 
     assert_eq!(
-        normalize_whitespace(expected),
-        normalize_whitespace(&src_code)
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
     );
 }

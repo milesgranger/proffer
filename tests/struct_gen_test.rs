@@ -1,12 +1,5 @@
 use proffer::*;
 
-fn normalize_whitespace(s: &str) -> String {
-    s.split("\n")
-        .map(|l| l.trim())
-        .filter(|l| l.len() > 0)
-        .collect::<String>()
-}
-
 #[test]
 fn basic_gen() {
     let struct_ = Struct::new("Basic")
@@ -35,8 +28,8 @@ fn basic_gen() {
     let src_code = struct_.generate();
     println!("{}", &src_code);
     assert_eq!(
-        normalize_whitespace(&src_code),
-        normalize_whitespace(&expected)
+        norm_whitespace(&src_code),
+        norm_whitespace(&expected)
     );
 }
 
@@ -71,7 +64,7 @@ fn generic_gen() {
     "#;
     let src_code = s.generate();
     assert_eq!(
-        normalize_whitespace(&src_code),
-        normalize_whitespace(&expected)
+        norm_whitespace(&src_code),
+        norm_whitespace(&expected)
     );
 }

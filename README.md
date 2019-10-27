@@ -52,8 +52,8 @@ let src_code = ipl.generate();
 println!("{}", &src_code);
 
 assert_eq!(
-    normalize_whitespace(expected),
-    normalize_whitespace(&src_code)
+    norm_whitespace(expected),
+    norm_whitespace(&src_code)
 )
 ```
 
