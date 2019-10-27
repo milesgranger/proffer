@@ -119,3 +119,29 @@ fn function_with_async() {
         norm_whitespace(&src_code)
     );
 }
+
+#[test]
+fn function_gen_parameter_annotations() {
+    let function = Function::new("foo")
+        .set_is_pub(true)
+        .add_parameter(Parameter::new("bar1", "usize")
+            .add_annotation("#[foo]")
+            .to_owned())
+        .add_parameter(Parameter::new("bar2", "&str")
+            .add_annotation("#[foo]")
+            .add_annotation("#[bar]")
+            .to_owned())
+        .to_owned();
+    let expected = r#"
+        pub fn foo(#[foo] bar1: usize, #[foo] #[bar] bar2: &str) -> ()
+        {
+        }
+    "#;
+
+    let src_code = function.generate();
+    println!("{}", &src_code);
+    assert_eq!(
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
+    );
+}

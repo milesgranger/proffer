@@ -104,7 +104,7 @@ impl SrcCode for FunctionSignature {
             &self
                 .parameters
                 .iter()
-                .map(|param| format!("{}: {}", param.name, param.ty))
+                .map(|param| param.generate())
                 .collect::<Vec<String>>(),
         );
         Tera::one_off(template, &context, false).unwrap()
@@ -184,6 +184,7 @@ impl Function {
 pub struct Parameter {
     name: String,
     ty: String,
+    annotations: Vec<String>,
 }
 impl Parameter {
     /// Create a new parameter
@@ -198,17 +199,24 @@ impl Parameter {
     /// assert_eq!(expected, &param);
     /// ```
     ///
-    pub fn new<S: ToString>(name: S, ty: S) -> Self {
+    pub fn new<S: ToString, T: ToString>(name: S, ty: T) -> Self {
         Self {
             name: name.to_string(),
             ty: ty.to_string(),
+            ..Self::default()
         }
+    }
+
+    /// Add parameter annotation
+    pub fn add_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
+        self.annotations.push(ann.to_string());
+        self
     }
 }
 
 impl SrcCode for Parameter {
     fn generate(&self) -> String {
-        let template = "{{ self.name }}: {{ self.ty }}";
+        let template = "{% for annotation in self.annotations %}{{ annotation }} {% endfor %}{{ self.name }}: {{ self.ty }}";
         let mut ctx = Context::new();
         ctx.insert("self", &self);
         Tera::one_off(template, &ctx, false).unwrap()
