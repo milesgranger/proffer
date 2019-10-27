@@ -106,3 +106,35 @@ fn gen_with_associated_types() {
         norm_whitespace(&src_code)
     );
 }
+
+#[test]
+fn gen_with_associated_type_annotations() {
+    let tr8t = Trait::new("Foo")
+        .set_is_pub(true)
+        .add_associated_type(AssociatedTypeDeclaration::new("BAR")
+            .add_annotation("#[bar]")
+            .to_owned())
+        .add_associated_type(AssociatedTypeDeclaration::new("BAZ")
+            .add_annotation("#[bar]")
+            .add_annotation("#[baz]")
+            .to_owned())
+        .to_owned();
+    let expected = r#"
+        pub trait Foo
+        {
+            #[bar]
+            type BAR;
+            #[bar]
+            #[baz]
+            type BAZ;
+        }
+    "#;
+
+    let src_code = tr8t.generate();
+    println!("{}", &src_code);
+
+    assert_eq!(
+        norm_whitespace(expected),
+        norm_whitespace(&src_code)
+    );
+}
