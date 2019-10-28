@@ -14,10 +14,7 @@ fn impl_basic_gen_with_trait() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 
     // Add a function to the impl
     let expected = r#"
@@ -34,10 +31,7 @@ fn impl_basic_gen_with_trait() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -53,10 +47,7 @@ fn impl_basic_gen_without_trait() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    )
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
 }
 
 #[test]
@@ -96,10 +87,7 @@ fn impl_with_generics() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    )
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
 }
 
 #[test]
@@ -120,23 +108,24 @@ fn impl_with_associated_types() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
 fn impl_with_associated_type_annotations() {
     let ipl = Impl::new("That")
         .set_impl_trait(Some(Trait::new("This")))
-        .add_associated_type(AssociatedTypeDefinition::new("FOO", "Bar")
-            .add_annotation("#[foo]")
-            .to_owned())
-        .add_associated_type(AssociatedTypeDefinition::new("BAR", "Foo")
-            .add_annotation("#[foo]")
-            .add_annotation("#[bar]")
-            .to_owned())
+        .add_associated_type(
+            AssociatedTypeDefinition::new("FOO", "Bar")
+                .add_annotation("#[foo]")
+                .to_owned(),
+        )
+        .add_associated_type(
+            AssociatedTypeDefinition::new("BAR", "Foo")
+                .add_annotation("#[foo]")
+                .add_annotation("#[bar]")
+                .to_owned(),
+        )
         .to_owned();
     let expected = r#"
         impl This for That
@@ -152,8 +141,5 @@ fn impl_with_associated_type_annotations() {
     let src_code = ipl.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }

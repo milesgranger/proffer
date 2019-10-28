@@ -27,10 +27,7 @@ fn basic_gen() {
     .to_owned();
     let src_code = struct_.generate();
     println!("{}", &src_code);
-    assert_eq!(
-        norm_whitespace(&src_code),
-        norm_whitespace(&expected)
-    );
+    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
 }
 
 #[test]
@@ -63,8 +60,5 @@ fn generic_gen() {
         }
     "#;
     let src_code = s.generate();
-    assert_eq!(
-        norm_whitespace(&src_code),
-        norm_whitespace(&expected)
-    );
+    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
 }
