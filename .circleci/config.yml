@@ -33,6 +33,11 @@ jobs:
           command: |
               rustup component add clippy
               cargo clippy --all -- -D warnings
+      - run:
+          name: Run Format
+          command: |
+            rustup component add rustfmt
+            cargo fmt --all -- --check
 
 workflows:
   version: 2.1
