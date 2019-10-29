@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{Function, Generic, Generics, Trait, AssociatedTypeDefinition};
+use crate::{AssociatedTypeDefinition, Function, Generic, Generics, Trait};
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
@@ -15,7 +15,7 @@ pub struct Impl {
     impl_trait: Option<Trait>,
     functions: Vec<Function>,
     obj_name: String,
-    associated_types: Vec<AssociatedTypeDefinition>
+    associated_types: Vec<AssociatedTypeDefinition>,
 }
 
 impl Impl {

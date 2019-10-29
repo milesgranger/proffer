@@ -12,10 +12,7 @@ fn basic_gen() {
     let src_code = tr8t.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -36,10 +33,7 @@ fn gen_with_method_signatures() {
     let src_code = tr8t.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -71,10 +65,7 @@ fn gen_with_generics() {
     let src_code = tr8t.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -82,12 +73,16 @@ fn gen_with_associated_types() {
     let tr8t = Trait::new("Foo")
         .set_is_pub(true)
         .add_associated_type(AssociatedTypeDeclaration::new("FOO"))
-        .add_associated_type(AssociatedTypeDeclaration::new("BAR")
-            .add_trait_bounds(vec!["Debug"])
-            .to_owned())
-        .add_associated_type(AssociatedTypeDeclaration::new("BAZ")
-            .add_trait_bounds(vec!["Debug", "Default"])
-            .to_owned())
+        .add_associated_type(
+            AssociatedTypeDeclaration::new("BAR")
+                .add_trait_bounds(vec!["Debug"])
+                .to_owned(),
+        )
+        .add_associated_type(
+            AssociatedTypeDeclaration::new("BAZ")
+                .add_trait_bounds(vec!["Debug", "Default"])
+                .to_owned(),
+        )
         .to_owned();
     let expected = r#"
         pub trait Foo
@@ -101,23 +96,24 @@ fn gen_with_associated_types() {
     let src_code = tr8t.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
 fn gen_with_associated_type_annotations() {
     let tr8t = Trait::new("Foo")
         .set_is_pub(true)
-        .add_associated_type(AssociatedTypeDeclaration::new("BAR")
-            .add_annotation("#[bar]")
-            .to_owned())
-        .add_associated_type(AssociatedTypeDeclaration::new("BAZ")
-            .add_annotation("#[bar]")
-            .add_annotation("#[baz]")
-            .to_owned())
+        .add_associated_type(
+            AssociatedTypeDeclaration::new("BAR")
+                .add_annotation("#[bar]")
+                .to_owned(),
+        )
+        .add_associated_type(
+            AssociatedTypeDeclaration::new("BAZ")
+                .add_annotation("#[bar]")
+                .add_annotation("#[baz]")
+                .to_owned(),
+        )
         .to_owned();
     let expected = r#"
         pub trait Foo
@@ -133,8 +129,5 @@ fn gen_with_associated_type_annotations() {
     let src_code = tr8t.generate();
     println!("{}", &src_code);
 
-    assert_eq!(
-        norm_whitespace(expected),
-        norm_whitespace(&src_code)
-    );
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
