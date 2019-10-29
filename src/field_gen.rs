@@ -33,10 +33,11 @@ pub struct Field {
 impl Field {
     /// Create a new `Field`
     pub fn new<S: ToString>(name: S, ty: S) -> Self {
-        let mut f = Field::default();
-        f.name = name.to_string();
-        f.ty = ty.to_string();
-        f
+        Self {
+            name: name.to_string(),
+            ty: ty.to_string(),
+            ..Self::default()
+        }
     }
 
     /// Add a single field annotation. ie `#[serde(rename="something")`

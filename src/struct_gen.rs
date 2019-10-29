@@ -21,9 +21,10 @@ pub struct Struct {
 impl Struct {
     /// Create a new `Struct`
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut s = Struct::default();
-        s.name = name.to_string();
-        s
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
 
     /// Add a new field to this struct

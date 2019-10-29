@@ -72,9 +72,10 @@ pub struct Module {
 impl Module {
     /// Create a new module
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut m = Module::default();
-        m.name = name.to_string();
-        m
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
     /// Set if this module is public
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {

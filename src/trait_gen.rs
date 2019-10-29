@@ -40,9 +40,10 @@ pub struct Trait {
 impl Trait {
     /// Create a new `trait`
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut t = Self::default();
-        t.name = name.to_string();
-        t
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
 
     /// Add a new signature requirement to this trait.

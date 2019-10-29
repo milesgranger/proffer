@@ -21,9 +21,10 @@ pub struct Impl {
 impl Impl {
     /// Create a new impl block
     pub fn new<S: ToString>(obj_name: S) -> Self {
-        let mut mpl = Self::default();
-        mpl.obj_name = obj_name.to_string();
-        mpl
+        Self {
+            obj_name: obj_name.to_string(),
+            ..Self::default()
+        }
     }
 
     /// Set if this `impl` is implementing a `Trait` for an object.

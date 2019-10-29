@@ -19,9 +19,10 @@ pub struct Generic {
 impl Generic {
     /// Create a new `Generic`
     pub fn new<S: ToString>(id: S) -> Self {
-        let mut g = Self::default();
-        g.generic = id.to_string();
-        g
+        Self {
+            generic: id.to_string(),
+            ..Self::default()
+        }
     }
     /// Set the trait bounds of this generic
     pub fn add_trait_bounds<S: ToString>(&mut self, traits: Vec<S>) -> &mut Self {

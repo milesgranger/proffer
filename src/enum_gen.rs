@@ -50,9 +50,10 @@ pub struct Variant {
 impl Enum {
     /// Create a new `Enum`
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut e = Enum::default();
-        e.name = name.to_string();
-        e
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
     /// Set if this is public
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
@@ -74,9 +75,10 @@ impl Enum {
 impl Variant {
     /// Create a new variant to add to an `Enum`
     pub fn new<S: ToString>(name: S) -> Self {
-        let mut v = Variant::default();
-        v.name = name.to_string();
-        v
+        Self {
+            name: name.to_string(),
+            ..Self::default()
+        }
     }
     /// Set the inner portion of this variant, expected to be valid Rust source code.
     pub fn set_inner<S: ToString>(&mut self, inner: Option<S>) -> &mut Self {
