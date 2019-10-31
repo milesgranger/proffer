@@ -39,8 +39,18 @@ jobs:
             rustup component add rustfmt
             cargo fmt --all -- --check
 
+  coverage:
+    machine: true
+    steps:
+        - checkout
+        - run:
+            name: Coverage with docker
+            command: docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin sh -c "cargo tarpaulin --ciserver circle-ci --coveralls $COVERALLS_REPO_TOKEN"
+
+
 workflows:
   version: 2.1
   test:
     jobs:
       - test
+      - coverage
