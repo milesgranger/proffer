@@ -6,6 +6,7 @@
 use serde::{Deserialize, Serialize};
 use tera::{Context, Tera};
 
+use crate::internal;
 use crate::traits::SrcCode;
 
 /// Represent the declaration of a associated type in a trait
@@ -24,16 +25,17 @@ impl AssociatedTypeDeclaration {
             ..Self::default()
         }
     }
-    /// Set the trait bounds of this associated type
-    pub fn add_trait_bounds<S: ToString>(&mut self, traits: Vec<S>) -> &mut Self {
-        self.traits.extend(traits.iter().map(|t| t.to_string()));
-        self
-    }
+}
 
-    /// Add a annotation to this associated type
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
-        self.annotations.push(annotation.to_string());
-        self
+impl internal::Annotations for AssociatedTypeDeclaration {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
+    }
+}
+
+impl internal::TraitBounds for AssociatedTypeDeclaration {
+    fn trait_bounds(&mut self) -> &mut Vec<String> {
+        &mut self.traits
     }
 }
 
@@ -68,11 +70,11 @@ impl AssociatedTypeDefinition {
             ..Self::default()
         }
     }
+}
 
-    /// Add a annotation to this associated type
-    pub fn add_annotation<S: ToString>(&mut self, annotation: S) -> &mut Self {
-        self.annotations.push(annotation.to_string());
-        self
+impl internal::Annotations for AssociatedTypeDefinition {
+    fn annotations(&mut self) -> &mut Vec<String> {
+        &mut self.annotations
     }
 }
 

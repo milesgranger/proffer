@@ -65,11 +65,6 @@ impl Enum {
         self.variants.push(variant);
         self
     }
-    /// Add a generic bound to this Enum
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.add_generic(generic);
-        self
-    }
 }
 
 impl Variant {
@@ -94,6 +89,12 @@ impl SrcCode for Variant {
         ctx.insert("self", &self);
         ctx.insert("inner", &self.inner.as_ref().unwrap_or(&"".to_string()));
         Tera::one_off(template, &ctx, false).unwrap()
+    }
+}
+
+impl internal::Generics for Enum {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.generics.generics()
     }
 }
 

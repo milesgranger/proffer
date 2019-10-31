@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{AssociatedTypeDeclaration, FunctionSignature, Generic, Generics};
+use crate::{internal, AssociatedTypeDeclaration, FunctionSignature, Generic, Generics};
 use tera::{Context, Tera};
 
 /// Represents a `trait` block.
@@ -58,16 +58,16 @@ impl Trait {
         self
     }
 
-    /// Add a generic bound to this trait.
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.add_generic(generic);
-        self
-    }
-
     /// Add a associated type to this trait.
     pub fn add_associated_type(&mut self, associated_type: AssociatedTypeDeclaration) -> &mut Self {
         self.associated_types.push(associated_type);
         self
+    }
+}
+
+impl internal::Generics for Trait {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.generics.generics()
     }
 }
 

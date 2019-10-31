@@ -122,8 +122,7 @@ fn impl_with_associated_type_annotations() {
         )
         .add_associated_type(
             AssociatedTypeDefinition::new("BAR", "Foo")
-                .add_annotation("#[foo]")
-                .add_annotation("#[bar]")
+                .add_annotations(&["#[foo]", "#[bar]"])
                 .to_owned(),
         )
         .to_owned();

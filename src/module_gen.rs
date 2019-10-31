@@ -112,25 +112,26 @@ impl Module {
         self.use_stmts.push(stmt.to_string());
         self
     }
-    /// Add outer module annotations
-    pub fn add_outer_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
-        self.outer_annotations.push(ann.to_string());
-        self
-    }
-    /// Add inner module annotations
-    pub fn add_inner_annotation<S: ToString>(&mut self, ann: S) -> &mut Self {
-        self.inner_annotations.push(ann.to_string());
-        self
-    }
-    /// Add a doc string to this module
-    pub fn add_doc<S: ToString>(&mut self, doc: S) -> &mut Self {
-        self.docs.push(doc.to_string());
-        self
-    }
     /// Add an enum to the module
     pub fn add_enum(&mut self, enumm: Enum) -> &mut Self {
         self.enums.push(enumm);
         self
+    }
+}
+
+impl internal::InnerAndOuterAnnotations for Module {
+    fn inner_annotations(&mut self) -> &mut Vec<String> {
+        &mut self.inner_annotations
+    }
+
+    fn outer_annotations(&mut self) -> &mut Vec<String> {
+        &mut self.outer_annotations
+    }
+}
+
+impl internal::Docs for Module {
+    fn docs(&mut self) -> &mut Vec<String> {
+        &mut self.docs
     }
 }
 

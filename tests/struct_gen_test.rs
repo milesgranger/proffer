@@ -44,8 +44,7 @@ fn generic_gen() {
                 .add_trait_bounds(vec!["ToString", "Number"])
                 .to_owned(),
         )
-        .add_field(Field::new("field1", "S"))
-        .add_field(Field::new("field2", "T"))
+        .add_fields(&[Field::new("field1", "S"), Field::new("field2", "T")])
         .to_owned();
     let src_code = s.generate();
     println!("{}", &src_code);
@@ -60,5 +59,25 @@ fn generic_gen() {
         }
     "#;
     let src_code = s.generate();
+    assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
+}
+
+#[test]
+fn gen_with_doc() {
+    let struct_ = Struct::new("Basic")
+        .set_is_pub(true)
+        .add_doc("/// Some example documentation")
+        .add_docs(vec!["/// Another line", "/// and another"])
+        .to_owned();
+    let expected = r#"
+        /// Some example documentation
+        /// Another line
+        /// and another
+        pub struct Basic {
+         }
+        "#
+    .to_owned();
+    let src_code = struct_.generate();
+    println!("{}", &src_code);
     assert_eq!(norm_whitespace(&src_code), norm_whitespace(&expected));
 }

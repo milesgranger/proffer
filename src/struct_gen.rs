@@ -27,18 +27,6 @@ impl Struct {
         }
     }
 
-    /// Add a new field to this struct
-    pub fn add_field(&mut self, field: Field) -> &mut Self {
-        self.fields.push(field);
-        self
-    }
-
-    /// Add a trait bound to this struct
-    pub fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics.add_generic(generic);
-        self
-    }
-
     /// Set if this struct is `pub`
     pub fn set_is_pub(&mut self, is_pub: bool) -> &mut Self {
         self.is_pub = is_pub;
@@ -46,9 +34,29 @@ impl Struct {
     }
 }
 
+impl internal::Fields for Struct {
+    fn fields(&mut self) -> &mut Vec<Field> {
+        &mut self.fields
+    }
+}
+
+impl internal::Generics for Struct {
+    fn generics(&mut self) -> &mut Vec<Generic> {
+        self.generics.generics()
+    }
+}
+
+impl internal::Docs for Struct {
+    fn docs(&mut self) -> &mut Vec<String> {
+        &mut self.docs
+    }
+}
+
 impl SrcCode for Struct {
     fn generate(&self) -> String {
         let template = r#"
+        {{ struct.docs | join(sep="
+        ") }}
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }} {
             {% for field in fields %}{{ field }}{% endfor %}
         }
