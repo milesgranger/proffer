@@ -29,15 +29,18 @@
 //!          trait Bar
 //!          {
 //!          }
+//!
 //!          fn foo() -> ()
 //!          {
 //!          }
-//!          struct Thingy {
-//!          }
-//!          impl Thingy
+//!
+//!          struct Thingy
 //!          {
 //!          }
 //!
+//!          impl Thingy
+//!          {
+//!          }
 //!      }
 //!  "#;
 //!  println!("{}", &src_code);
@@ -141,10 +144,10 @@ impl SrcCode for Module {
         {% for annotation in self.outer_annotations %}{{ annotation }}{% endfor %}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
-            {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
-
             {% for annotation in self.inner_annotations %}{{ annotation }}{% endfor %}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
+
+            {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
             {% for obj in objs %}{{ obj }}{% endfor %}
             {% for sub_mod in submodules %}{{ sub_mod }}{% endfor %}
         }

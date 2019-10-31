@@ -1,3 +1,6 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
 
 #[test]
@@ -14,35 +17,40 @@ fn test_module_basic() {
         .add_use_statement("use super::*;")
         .add_enum(Enum::new("EnumThingy"))
         .to_owned();
-    let src_code = m.generate();
+    let src_code = m.generate_and_verify();
 
     let expected = r#"
         #[special_outer_annotation]
         pub mod foo
         {
-            use super::*;
-
             #![special_inner_annotation]
             //! Module level docs
+
+            use super::*;
 
             pub trait Bar
             {
             }
+
             fn foo() -> ()
             {
             }
-            struct Thingy {
+
+            struct Thingy
+            {
             }
+
             impl Thingy
             {
             }
-            enum EnumThingy {
-            }
 
+            enum EnumThingy
+            {
+            }
         }
     "#;
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -63,7 +71,7 @@ fn test_module_submodule() {
                 .to_owned(),
         )
         .to_owned();
-    let src_code = m.generate();
+    let src_code = m.generate_and_verify();
 
     let expected = r#"
         pub mod upper_module
@@ -78,20 +86,25 @@ fn test_module_submodule() {
                 pub trait Bar
                 {
                 }
+
                 fn foo() -> ()
                 {
                 }
-                struct Thingy {
+
+                struct Thingy
+                {
                 }
+
                 impl Thingy
                 {
                 }
-                enum EnumThingy {
-                }
 
+                enum EnumThingy
+                {
+                }
             }
         }
     "#;
     println!("{}", &src_code);
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }

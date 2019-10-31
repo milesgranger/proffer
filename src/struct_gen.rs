@@ -57,7 +57,8 @@ impl SrcCode for Struct {
         let template = r#"
         {{ struct.docs | join(sep="
         ") }}
-        {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }} {
+        {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }}
+        {
             {% for field in fields %}{{ field }}{% endfor %}
         }
         "#;

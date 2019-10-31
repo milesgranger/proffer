@@ -101,7 +101,8 @@ impl internal::Generics for Enum {
 impl SrcCode for Enum {
     fn generate(&self) -> String {
         let template = r#"
-            {% if self.is_pub %}pub {% endif %}enum {{ self.name }}{{ generics }} {
+            {% if self.is_pub %}pub {% endif %}enum {{ self.name }}{{ generics }}
+            {
                 {% for variant in variants %}{{ variant }},
                 {% endfor %}
             }

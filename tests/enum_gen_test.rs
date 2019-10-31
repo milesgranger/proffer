@@ -1,3 +1,6 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
 
 #[test]
@@ -8,17 +11,18 @@ fn gen_enum_basic() {
         .set_is_pub(true)
         .to_owned();
 
-    let src_code = e.generate();
+    let src_code = e.generate_and_verify();
     println!("{}", &src_code);
 
     let expected = r#"
-        pub enum Foo {
+        pub enum Foo
+        {
             A,
             B,
         }
     "#;
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -29,7 +33,7 @@ fn gen_enum_with_generic() {
         .add_generic(Generic::new("T"))
         .to_owned();
 
-    let src_code = e.generate();
+    let src_code = e.generate_and_verify();
     println!("{}", &src_code);
 
     let expected = r#"
@@ -41,5 +45,5 @@ fn gen_enum_with_generic() {
             B(T),
         }
     "#;
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }

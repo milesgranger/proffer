@@ -1,3 +1,6 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
 
 #[test]
@@ -11,7 +14,7 @@ fn impl_basic_gen_with_trait() {
         }
     "#;
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -28,7 +31,7 @@ fn impl_basic_gen_with_trait() {
 
     let ipl = ipl.add_function(Function::new("foo"));
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -44,10 +47,10 @@ fn impl_basic_gen_without_trait() {
         }
     "#;
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -84,10 +87,10 @@ fn impl_with_generics() {
         }
     "#;
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
-    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code))
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
 
 #[test]
@@ -105,7 +108,7 @@ fn impl_with_associated_types() {
         }
     "#;
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -137,7 +140,7 @@ fn impl_with_associated_type_annotations() {
         }
     "#;
 
-    let src_code = ipl.generate();
+    let src_code = ipl.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));

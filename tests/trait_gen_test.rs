@@ -1,3 +1,6 @@
+pub mod utilities;
+use crate::utilities::Verify;
+
 use proffer::*;
 
 #[test]
@@ -9,7 +12,7 @@ fn basic_gen() {
         }
     "#;
 
-    let src_code = tr8t.generate();
+    let src_code = tr8t.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -30,7 +33,7 @@ fn gen_with_method_signatures() {
         }
     "#;
 
-    let src_code = tr8t.generate();
+    let src_code = tr8t.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -62,7 +65,7 @@ fn gen_with_generics() {
         }
     "#;
 
-    let src_code = tr8t.generate();
+    let src_code = tr8t.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -93,7 +96,7 @@ fn gen_with_associated_types() {
         }
     "#;
 
-    let src_code = tr8t.generate();
+    let src_code = tr8t.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
@@ -126,7 +129,7 @@ fn gen_with_associated_type_annotations() {
         }
     "#;
 
-    let src_code = tr8t.generate();
+    let src_code = tr8t.generate_and_verify();
     println!("{}", &src_code);
 
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
