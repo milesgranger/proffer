@@ -20,7 +20,7 @@ pub struct Impl {
 
 impl Impl {
     /// Create a new impl block
-    pub fn new<S: ToString>(obj_name: S) -> Self {
+    pub fn new(obj_name: impl ToString) -> Self {
         Self {
             obj_name: obj_name.to_string(),
             ..Self::default()

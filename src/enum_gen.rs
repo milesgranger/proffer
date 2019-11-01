@@ -49,7 +49,7 @@ pub struct Variant {
 
 impl Enum {
     /// Create a new `Enum`
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()
@@ -69,14 +69,14 @@ impl Enum {
 
 impl Variant {
     /// Create a new variant to add to an `Enum`
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()
         }
     }
     /// Set the inner portion of this variant, expected to be valid Rust source code.
-    pub fn set_inner<S: ToString>(&mut self, inner: Option<S>) -> &mut Self {
+    pub fn set_inner(&mut self, inner: Option<impl ToString>) -> &mut Self {
         self.inner = inner.map(|s| s.to_string());
         self
     }

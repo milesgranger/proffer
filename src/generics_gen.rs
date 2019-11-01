@@ -19,7 +19,7 @@ pub struct Generic {
 
 impl Generic {
     /// Create a new `Generic`
-    pub fn new<S: ToString>(id: S) -> Self {
+    pub fn new(id: impl ToString) -> Self {
         Self {
             generic: id.to_string(),
             ..Self::default()

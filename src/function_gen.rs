@@ -34,7 +34,7 @@ pub struct FunctionSignature {
 
 impl FunctionSignature {
     /// Create a new function signature.
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()
@@ -54,7 +54,7 @@ impl FunctionSignature {
     }
 
     /// Set a return type, if `None` will result in `()` type.
-    pub fn set_return_ty<S: ToString>(&mut self, ty: Option<S>) -> &mut Self {
+    pub fn set_return_ty(&mut self, ty: Option<impl ToString>) -> &mut Self {
         self.return_ty = ty.map(|s| s.to_string());
         self
     }
@@ -66,7 +66,7 @@ impl FunctionSignature {
     }
 
     /// Set the name of this function.
-    pub fn set_name<S: ToString>(&mut self, name: S) -> &mut Self {
+    pub fn set_name(&mut self, name: impl ToString) -> &mut Self {
         self.name = name.to_string();
         self
     }
@@ -150,7 +150,7 @@ impl SrcCode for FunctionBody {
 
 impl Function {
     /// Create a new function
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             signature: FunctionSignature::new(name),
             ..Self::default()
@@ -163,7 +163,7 @@ impl Function {
         self
     }
     /// Set the return type of this function
-    pub fn set_return_ty<S: ToString>(&mut self, ty: S) -> &mut Self {
+    pub fn set_return_ty(&mut self, ty: impl ToString) -> &mut Self {
         self.signature.return_ty = Some(ty.to_string());
         self
     }
@@ -178,7 +178,7 @@ impl Function {
         self
     }
     /// Set the body of the function, this should be valid Rust source code syntax.
-    pub fn set_body<S: ToString>(&mut self, body: S) -> &mut Self {
+    pub fn set_body(&mut self, body: impl ToString) -> &mut Self {
         self.body.body = body.to_string();
         self
     }
@@ -220,7 +220,7 @@ impl Parameter {
     /// assert_eq!(expected, &param);
     /// ```
     ///
-    pub fn new<S: ToString, T: ToString>(name: S, ty: T) -> Self {
+    pub fn new(name: impl ToString, ty: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ty: ty.to_string(),

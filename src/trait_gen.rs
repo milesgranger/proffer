@@ -39,7 +39,7 @@ pub struct Trait {
 
 impl Trait {
     /// Create a new `trait`
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()

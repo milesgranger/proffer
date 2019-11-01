@@ -32,7 +32,7 @@ pub struct Field {
 
 impl Field {
     /// Create a new `Field`
-    pub fn new<S: ToString>(name: S, ty: S) -> Self {
+    pub fn new(name: impl ToString, ty: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ty: ty.to_string(),

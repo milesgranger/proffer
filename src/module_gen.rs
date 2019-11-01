@@ -74,7 +74,7 @@ pub struct Module {
 
 impl Module {
     /// Create a new module
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()
@@ -111,7 +111,7 @@ impl Module {
         self
     }
     /// Add a `use` statement or similar module level statements
-    pub fn add_use_statement<S: ToString>(&mut self, stmt: S) -> &mut Self {
+    pub fn add_use_statement(&mut self, stmt: impl ToString) -> &mut Self {
         self.use_stmts.push(stmt.to_string());
         self
     }

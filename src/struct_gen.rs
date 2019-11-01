@@ -20,7 +20,7 @@ pub struct Struct {
 
 impl Struct {
     /// Create a new `Struct`
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()

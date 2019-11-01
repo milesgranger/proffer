@@ -19,7 +19,7 @@ pub struct AssociatedTypeDeclaration {
 
 impl AssociatedTypeDeclaration {
     /// Create a new `AssociatedTypeDeclaration`
-    pub fn new<S: ToString>(name: S) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
             name: name.to_string(),
             ..Self::default()
@@ -63,7 +63,7 @@ pub struct AssociatedTypeDefinition {
 
 impl AssociatedTypeDefinition {
     /// Create a new `AssociatedTypeDefinition`
-    pub fn new<N: ToString, I: ToString>(name: N, implementer: I) -> Self {
+    pub fn new(name: impl ToString, implementer: impl ToString) -> Self {
         AssociatedTypeDefinition {
             name: name.to_string(),
             implementer: implementer.to_string(),
