@@ -1,21 +1,21 @@
 //! Re-exports from the `gen` submodules.
 
-pub mod associated_types_gen;
-pub mod enum_gen;
-pub mod field_gen;
-pub mod function_gen;
-pub mod generics_gen;
-pub mod impl_gen;
-pub mod module_gen;
-pub mod struct_gen;
-pub mod trait_gen;
+pub mod associated_types;
+pub mod r#enum;
+pub mod field;
+pub mod function;
+pub mod generics;
+pub mod r#impl;
+pub mod module;
+pub mod r#struct;
+pub mod r#trait;
 
-pub use associated_types_gen::*;
-pub use enum_gen::*;
-pub use field_gen::*;
-pub use function_gen::*;
-pub use generics_gen::*;
-pub use impl_gen::*;
-pub use module_gen::*;
-pub use struct_gen::*;
-pub use trait_gen::*;
+pub use associated_types::*;
+pub use r#enum::*;
+pub use field::*;
+pub use function::*;
+pub use generics::*;
+pub use r#impl::*;
+pub use module::*;
+pub use r#struct::*;
+pub use r#trait::*;
