@@ -164,14 +164,7 @@ impl SrcCode for Module {
         self.enums.iter().for_each(|v| objs.push(v.generate()));
         ctx.insert("objs", &objs);
 
-        ctx.insert(
-            "submodules",
-            &self
-                .sub_modules
-                .iter()
-                .map(|m| m.generate())
-                .collect::<Vec<String>>(),
-        );
+        ctx.insert("submodules", &self.sub_modules.to_src_vec());
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }

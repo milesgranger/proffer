@@ -64,13 +64,7 @@ impl SrcCode for Struct {
         "#;
         let mut context = Context::new();
         context.insert("struct", &self);
-
-        let fields = self
-            .fields
-            .iter()
-            .map(|f| f.generate())
-            .collect::<Vec<String>>();
-        context.insert("fields", &fields);
+        context.insert("fields", &self.fields.to_src_vec());
         context.insert("generics", &self.generics.generate());
         Tera::one_off(template, &context, false).unwrap()
     }

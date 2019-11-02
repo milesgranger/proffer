@@ -5,7 +5,9 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{internal, AssociatedTypeDeclaration, FunctionSignature, Generic, Generics};
+use crate::{
+    internal, AssociatedTypeDeclaration, FunctionSignature, Generic, Generics, SrcCodeVec,
+};
 use tera::{Context, Tera};
 
 /// Represents a `trait` block.
@@ -82,22 +84,8 @@ impl SrcCode for Trait {
         "#;
         let mut context = Context::new();
         context.insert("self", &self);
-        context.insert(
-            "signatures",
-            &self
-                .signatures
-                .iter()
-                .map(|s| s.generate())
-                .collect::<Vec<String>>(),
-        );
-        context.insert(
-            "associated_types",
-            &self
-                .associated_types
-                .iter()
-                .map(|t| t.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("signatures", &self.signatures.to_src_vec());
+        context.insert("associated_types", &self.associated_types.to_src_vec());
         context.insert("has_generics", &!self.generics.is_empty());
         context.insert("generic_bounds", &self.generics.generate());
         Tera::one_off(template, &context, false).unwrap()

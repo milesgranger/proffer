@@ -5,7 +5,7 @@
 use serde::Serialize;
 
 use crate::traits::SrcCode;
-use crate::{internal, AssociatedTypeDefinition, Function, Generic, Generics, Trait};
+use crate::{internal, AssociatedTypeDefinition, Function, Generic, Generics, SrcCodeVec, Trait};
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
@@ -89,22 +89,8 @@ impl SrcCode for Impl {
                 .map(|g| g.generic.clone())
                 .collect::<Vec<String>>(),
         );
-        context.insert(
-            "functions",
-            &self
-                .functions
-                .iter()
-                .map(|f| f.generate())
-                .collect::<Vec<String>>(),
-        );
-        context.insert(
-            "associated_types",
-            &self
-                .associated_types
-                .iter()
-                .map(|a| a.generate())
-                .collect::<Vec<String>>(),
-        );
+        context.insert("functions", &self.functions.to_src_vec());
+        context.insert("associated_types", &self.associated_types.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }
