@@ -22,7 +22,8 @@ pub trait Fields {
 /// Internal trait to get access to the container storing the generics.
 /// Used for the generic implementation of `GenericExt`
 pub trait Generics {
-    fn generics(&mut self) -> &mut Vec<Generic>;
+    fn generics_mut(&mut self) -> &mut Vec<Generic>;
+    fn generics(&self) -> &[Generic];
 }
 
 /// Internal trait to get access to the container storing the trait bounds.

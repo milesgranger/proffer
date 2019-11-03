@@ -4,14 +4,15 @@
 
 use serde::Serialize;
 
+use crate::internal::Generics;
 use crate::traits::SrcCode;
-use crate::{internal, AssociatedTypeDefinition, Function, Generic, Generics, SrcCodeVec, Trait};
+use crate::{internal, AssociatedTypeDefinition, Function, Generic, SrcCodeVec, Trait};
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
 #[derive(Serialize, Default, Clone)]
 pub struct Impl {
-    generics: Generics,
+    generics: Vec<Generic>,
     impl_trait: Option<Trait>,
     functions: Vec<Function>,
     obj_name: String,
@@ -47,8 +48,11 @@ impl Impl {
 }
 
 impl internal::Generics for Impl {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.generics.as_slice()
     }
 }
 
@@ -58,7 +62,7 @@ impl SrcCode for Impl {
             impl{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %} {% if has_trait %}{{ trait_name }} for {% endif %}{{ self.obj_name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}
                 {% if has_generics %}
                 where
-                    {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
+                    {% for generic in generics %}{{ generic.name }}: {{ generic.traits | join(sep=" + ") }},
                     {% endfor %}
                 {% endif %}
             {
@@ -73,21 +77,17 @@ impl SrcCode for Impl {
         context.insert("has_trait", &self.impl_trait.is_some());
         context.insert(
             "trait_name",
-            &self
-                .impl_trait
-                .as_ref()
-                .map_or_else(|| "".to_string(), |t| t.name.clone()),
+            &self.impl_trait.as_ref().map_or_else(|| "", |t| t.name()),
         );
-        context.insert("has_generics", &!self.generics.is_empty());
-        context.insert("generics", &self.generics.generics);
+        context.insert("has_generics", &!self.generics().is_empty());
+        context.insert("generics", &self.generics());
         context.insert(
             "generic_keys",
             &self
-                .generics
-                .generics
+                .generics()
                 .iter()
-                .map(|g| g.generic.clone())
-                .collect::<Vec<String>>(),
+                .map(|g| g.name())
+                .collect::<Vec<&str>>(),
         );
         context.insert("functions", &self.functions.to_src_vec());
         context.insert("associated_types", &self.associated_types.to_src_vec());

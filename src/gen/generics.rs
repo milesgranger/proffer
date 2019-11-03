@@ -13,17 +13,22 @@ use crate::traits::SrcCode;
 /// Represent a single trait bound
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
-    pub(crate) generic: String,
-    pub(crate) traits: Vec<String>,
+    name: String,
+    traits: Vec<String>,
 }
 
 impl Generic {
     /// Create a new `Generic`
-    pub fn new(id: impl ToString) -> Self {
+    pub fn new(name: impl ToString) -> Self {
         Self {
-            generic: id.to_string(),
+            name: name.to_string(),
             ..Self::default()
         }
+    }
+
+    /// Get the name of the generic
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 }
 
@@ -33,53 +38,20 @@ impl internal::TraitBounds for Generic {
     }
 }
 
-/// Represent a collection of trait bounds
-#[derive(Serialize, Deserialize, Default, Clone)]
-pub struct Generics {
-    pub(crate) generics: Vec<Generic>,
-}
-
-impl internal::Generics for Generics {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        &mut self.generics
-    }
-}
-
-impl Generics {
-    /// Create a new collection of `Generic`s.
-    pub fn new(generics: Vec<Generic>) -> Self {
-        Self { generics }
-    }
-
-    /// Check how many generics are held here
-    pub fn len(&self) -> usize {
-        self.generics.len()
-    }
-
-    /// Determine if it doesn't have any generics.
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-}
-
-impl SrcCode for Generics {
+impl SrcCode for Vec<Generic> {
     fn generate(&self) -> String {
-        if !self.generics.is_empty() {
+        if !self.is_empty() {
             let template = r#"<{{ generic_keys | join(sep=", ") }}>
                 where
-                    {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
+                    {% for generic in generics %}{{ generic.name }}: {{ generic.traits | join(sep=" + ") }},
                     {% endfor %}
             "#;
             let mut context = Context::new();
             context.insert(
                 "generic_keys",
-                &self
-                    .generics
-                    .iter()
-                    .map(|g| g.generic.clone())
-                    .collect::<Vec<String>>(),
+                &self.iter().map(|g| g.name()).collect::<Vec<&str>>(),
             );
-            context.insert("generics", &self.generics);
+            context.insert("generics", &self);
             Tera::one_off(template, &context, false).unwrap()
         } else {
             "".to_string()
