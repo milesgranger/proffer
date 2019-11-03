@@ -9,9 +9,9 @@
 use serde::Serialize;
 use tera::{Context, Tera};
 
-use crate::internal::Annotations;
+use crate::internal::{Annotations, Generics};
 use crate::traits::SrcCode;
-use crate::{internal, Generic, Generics, SrcCodeVec};
+use crate::{internal, Generic, SrcCodeVec};
 
 /// Represents a function or method. Determined if any `Parameter` contains `self`
 #[derive(Default, Serialize, Clone)]
@@ -27,7 +27,7 @@ pub struct FunctionSignature {
     is_pub: bool,
     is_async: bool,
     parameters: Vec<Parameter>,
-    generics: Generics,
+    generics: Vec<Generic>,
     return_ty: Option<String>,
     annotations: Vec<String>,
 }
@@ -79,8 +79,11 @@ impl internal::Annotations for FunctionSignature {
 }
 
 impl internal::Generics for FunctionSignature {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.generics.as_slice()
     }
 }
 
@@ -91,7 +94,7 @@ impl SrcCode for FunctionSignature {
         ") }}
         {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
             where
-                {% for generic in generics %}{{ generic.generic }}: {{ generic.traits | join(sep=" + ") }},
+                {% for generic in generics %}{{ generic.name }}: {{ generic.traits | join(sep=" + ") }},
                 {% endfor %}{% endif %}"#;
         let mut context = Context::new();
         context.insert("self", &self);
@@ -99,16 +102,15 @@ impl SrcCode for FunctionSignature {
             "return_ty",
             &self.return_ty.as_ref().unwrap_or(&"()".to_string()),
         );
-        context.insert("has_generics", &!self.generics.is_empty());
-        context.insert("generics", &self.generics.generics);
+        context.insert("has_generics", &!self.generics().is_empty());
+        context.insert("generics", &self.generics());
         context.insert(
             "generic_keys",
             &self
-                .generics
-                .generics
+                .generics()
                 .iter()
-                .map(|g| g.generic.clone())
-                .collect::<Vec<String>>(),
+                .map(|g| g.name())
+                .collect::<Vec<&str>>(),
         );
         context.insert("parameters", &self.parameters.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
@@ -188,8 +190,11 @@ impl internal::InnerAndOuterAnnotations for Function {
 }
 
 impl internal::Generics for Function {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.signature.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.signature.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.signature.generics.as_slice()
     }
 }
 

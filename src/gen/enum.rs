@@ -35,7 +35,7 @@ use tera::{Context, Tera};
 #[derive(Default, Serialize, Clone)]
 pub struct Enum {
     name: String,
-    generics: Generics,
+    generics: Vec<Generic>,
     is_pub: bool,
     variants: Vec<Variant>,
 }
@@ -93,8 +93,11 @@ impl SrcCode for Variant {
 }
 
 impl internal::Generics for Enum {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.generics.as_slice()
     }
 }
 

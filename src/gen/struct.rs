@@ -14,7 +14,7 @@ pub struct Struct {
     is_pub: bool,
     name: String,
     fields: Vec<Field>,
-    generics: Generics,
+    generics: Vec<Generic>,
     docs: Vec<String>,
 }
 
@@ -41,8 +41,11 @@ impl internal::Fields for Struct {
 }
 
 impl internal::Generics for Struct {
-    fn generics(&mut self) -> &mut Vec<Generic> {
-        self.generics.generics()
+    fn generics_mut(&mut self) -> &mut Vec<Generic> {
+        &mut self.generics
+    }
+    fn generics(&self) -> &[Generic] {
+        self.generics.as_slice()
     }
 }
 

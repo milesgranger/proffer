@@ -17,13 +17,13 @@ pub trait GenericExt {
 impl<T: Generics> GenericExt for T {
     /// Add a single generic.
     fn add_generic(&mut self, generic: Generic) -> &mut Self {
-        self.generics().push(generic);
+        self.generics_mut().push(generic);
         self
     }
 
     /// Add multiple generics at once.
     fn add_generics<'a>(&mut self, generics: impl IntoIterator<Item = &'a Generic>) -> &mut Self {
-        self.generics()
+        self.generics_mut()
             .extend(generics.into_iter().map(ToOwned::to_owned));
         self
     }
