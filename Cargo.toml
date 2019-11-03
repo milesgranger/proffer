@@ -11,6 +11,7 @@ documentation = "https://docs.rs/crate/proffer/"
 license-file = "LICENSE"
 exclude = [".circleci/config.yml"]
 readme = "README.md"
+categories = ["development-tools", "development-tools::build-utils"]
 
 [badges]
 circle-ci = { repository = "milesgranger/proffer", branch = "master" }
