@@ -28,13 +28,13 @@ impl AssociatedTypeDeclaration {
 }
 
 impl internal::Annotations for AssociatedTypeDeclaration {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
 }
 
 impl internal::TraitBounds for AssociatedTypeDeclaration {
-    fn trait_bounds(&mut self) -> &mut Vec<String> {
+    fn trait_bounds_mut(&mut self) -> &mut Vec<String> {
         &mut self.traits
     }
 }
@@ -73,7 +73,7 @@ impl AssociatedTypeDefinition {
 }
 
 impl internal::Annotations for AssociatedTypeDefinition {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
 }

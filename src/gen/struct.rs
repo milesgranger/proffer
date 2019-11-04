@@ -35,7 +35,7 @@ impl Struct {
 }
 
 impl internal::Fields for Struct {
-    fn fields(&mut self) -> &mut Vec<Field> {
+    fn fields_mut(&mut self) -> &mut Vec<Field> {
         &mut self.fields
     }
 }
@@ -50,7 +50,7 @@ impl internal::Generics for Struct {
 }
 
 impl internal::Docs for Struct {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }

@@ -19,7 +19,7 @@ pub trait TraitBoundExt {
 impl<T: TraitBounds> TraitBoundExt for T {
     /// Add a single trait bound.
     fn add_trait_bound(&mut self, trait_bound: impl ToString) -> &mut Self {
-        self.trait_bounds().push(trait_bound.to_string());
+        self.trait_bounds_mut().push(trait_bound.to_string());
         self
     }
 
@@ -28,7 +28,7 @@ impl<T: TraitBounds> TraitBoundExt for T {
         &mut self,
         trait_bounds: impl IntoIterator<Item = impl ToString>,
     ) -> &mut Self {
-        self.trait_bounds()
+        self.trait_bounds_mut()
             .extend(trait_bounds.into_iter().map(|t| t.to_string()));
         self
     }

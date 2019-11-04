@@ -48,13 +48,13 @@ impl Field {
 }
 
 impl internal::Annotations for Field {
-    fn annotations(&mut self) -> &mut Vec<String> {
+    fn annotations_mut(&mut self) -> &mut Vec<String> {
         &mut self.annotations
     }
 }
 
 impl internal::Docs for Field {
-    fn docs(&mut self) -> &mut Vec<String> {
+    fn docs_mut(&mut self) -> &mut Vec<String> {
         &mut self.docs
     }
 }
