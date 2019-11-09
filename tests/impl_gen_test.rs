@@ -115,17 +115,17 @@ fn impl_with_associated_types() {
 }
 
 #[test]
-fn impl_with_associated_type_annotations() {
+fn impl_with_associated_type_attributes() {
     let ipl = Impl::new("That")
         .set_impl_trait(Some(Trait::new("This")))
         .add_associated_type(
             AssociatedTypeDefinition::new("FOO", "Bar")
-                .add_annotation("#[foo]")
+                .add_attribute("#[foo]")
                 .to_owned(),
         )
         .add_associated_type(
             AssociatedTypeDefinition::new("BAR", "Foo")
-                .add_annotations(&["#[foo]", "#[bar]"])
+                .add_attributes(&["#[foo]", "#[bar]"])
                 .to_owned(),
         )
         .to_owned();

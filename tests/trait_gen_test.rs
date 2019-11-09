@@ -103,18 +103,18 @@ fn gen_with_associated_types() {
 }
 
 #[test]
-fn gen_with_associated_type_annotations() {
+fn gen_with_associated_type_attributes() {
     let tr8t = Trait::new("Foo")
         .set_is_pub(true)
         .add_associated_type(
             AssociatedTypeDeclaration::new("BAR")
-                .add_annotation("#[bar]")
+                .add_attribute("#[bar]")
                 .to_owned(),
         )
         .add_associated_type(
             AssociatedTypeDeclaration::new("BAZ")
-                .add_annotation("#[bar]")
-                .add_annotation("#[baz]")
+                .add_attribute("#[bar]")
+                .add_attribute("#[baz]")
                 .to_owned(),
         )
         .to_owned();

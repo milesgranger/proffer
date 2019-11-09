@@ -11,8 +11,8 @@ fn test_module_basic() {
         .add_function(Function::new("foo"))
         .add_struct(Struct::new("Thingy"))
         .add_impl(Impl::new("Thingy"))
-        .add_outer_annotation("#[special_outer_annotation]")
-        .add_inner_annotation("#![special_inner_annotation]")
+        .add_attribute("#[special_outer_attribute]")
+        .add_attribute("#![special_inner_attribute]")
         .add_doc("//! Module level docs")
         .add_use_statement("use super::*;")
         .add_enum(Enum::new("EnumThingy"))
@@ -20,10 +20,10 @@ fn test_module_basic() {
     let src_code = m.generate_and_verify();
 
     let expected = r#"
-        #[special_outer_annotation]
+        #[special_outer_attribute]
         pub mod foo
         {
-            #![special_inner_annotation]
+            #![special_inner_attribute]
             //! Module level docs
 
             use super::*;
@@ -64,8 +64,8 @@ fn test_module_submodule() {
                 .add_function(Function::new("foo"))
                 .add_struct(Struct::new("Thingy"))
                 .add_impl(Impl::new("Thingy"))
-                .add_outer_annotation("#[special_outer_annotation]")
-                .add_inner_annotation("#![special_inner_annotation]")
+                .add_attribute("#[special_outer_attribute]")
+                .add_attribute("#![special_inner_attribute]")
                 .add_doc("//! Module level docs")
                 .add_enum(Enum::new("EnumThingy"))
                 .to_owned(),
@@ -77,10 +77,10 @@ fn test_module_submodule() {
         pub mod upper_module
         {
 
-            #[special_outer_annotation]
+            #[special_outer_attribute]
             pub mod foo
             {
-                #![special_inner_annotation]
+                #![special_inner_attribute]
                 //! Module level docs
 
                 pub trait Bar

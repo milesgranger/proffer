@@ -10,7 +10,7 @@ fn basic_gen() {
         .add_field(
             Field::new("field1", "String")
                 .set_is_pub(true)
-                .add_annotation("#[serde = w]")
+                .add_attribute("#[serde = w]")
                 .add_doc("/// Some example documentation")
                 .add_docs(vec!["/// Another line", "/// and another"])
                 .to_owned(),

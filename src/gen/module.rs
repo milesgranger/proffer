@@ -12,18 +12,18 @@
 //!     .add_function(Function::new("foo"))
 //!     .add_struct(Struct::new("Thingy"))
 //!     .add_impl(Impl::new("Thingy"))
-//!     .add_outer_annotation("#[special_outer_annotation]")
-//!     .add_inner_annotation("#![special_inner_annotation]")
+//!     .add_attribute("#[special_outer_attribute]")
+//!     .add_attribute("#![special_inner_attribute]")
 //!     .add_doc("//! Module level docs")
 //!     .to_owned();
 //!
 //! let src_code = m.generate();
 //!
 //!  let expected = r#"
-//!      #[special_outer_annotation]
+//!      #[special_outer_attribute]
 //!      pub mod foo
 //!      {
-//!          #![special_inner_annotation]
+//!          #![special_inner_attribute]
 //!          //! Module level docs
 //!
 //!          trait Bar
@@ -67,8 +67,7 @@ pub struct Module {
     enums: Vec<Enum>,
     docs: Vec<String>,
     sub_modules: Vec<Module>,
-    inner_annotations: Vec<String>,
-    outer_annotations: Vec<String>,
+    attributes: Vec<Attribute>,
     use_stmts: Vec<String>,
 }
 
@@ -122,12 +121,9 @@ impl Module {
     }
 }
 
-impl internal::InnerAndOuterAnnotations for Module {
-    fn inner_annotations_mut(&mut self) -> &mut Vec<String> {
-        &mut self.inner_annotations
-    }
-    fn outer_annotations_mut(&mut self) -> &mut Vec<String> {
-        &mut self.outer_annotations
+impl internal::Attributes for Module {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
     }
 }
 
@@ -140,10 +136,12 @@ impl internal::Docs for Module {
 impl SrcCode for Module {
     fn generate(&self) -> String {
         let template = r#"
-        {% for annotation in self.outer_annotations %}{{ annotation }}{% endfor %}
+        {{ item_attributes | join(sep="
+        ") }}
         {% if self.is_pub %}pub {% endif %}mod {{ self.name }}
         {
-            {% for annotation in self.inner_annotations %}{{ annotation }}{% endfor %}
+            {{ scope_attributes | join(sep="
+            ") }}
             {% for doc in self.docs %}{{ doc }}{% endfor %}
 
             {% for stmt in self.use_stmts %}{{ stmt }}{% endfor %}
@@ -154,7 +152,28 @@ impl SrcCode for Module {
 
         let mut ctx = Context::new();
         ctx.insert("self", &self);
-
+        ctx.insert(
+            "item_attributes",
+            &self
+                .attributes
+                .iter()
+                .filter_map(|ann| match ann {
+                    Attribute::ItemAttr(a) => Some(a),
+                    Attribute::ScopeAttr(_) => None,
+                })
+                .collect::<Vec<&String>>(),
+        );
+        ctx.insert(
+            "scope_attributes",
+            &self
+                .attributes
+                .iter()
+                .filter_map(|ann| match ann {
+                    Attribute::ItemAttr(_) => None,
+                    Attribute::ScopeAttr(a) => Some(a),
+                })
+                .collect::<Vec<&String>>(),
+        );
         let mut objs: Vec<String> = vec![];
         self.traits.iter().for_each(|v| objs.push(v.generate()));
         self.functions.iter().for_each(|v| objs.push(v.generate()));

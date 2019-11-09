@@ -2,13 +2,13 @@
 //! Trait(s) specific to code generation objects within this crate.
 //!
 
-pub mod annotations;
+pub mod attributes;
 pub mod docs;
 pub mod fields;
 pub mod generics;
 pub mod trait_bounds;
 
-pub use annotations::*;
+pub use attributes::*;
 pub use docs::*;
 pub use fields::*;
 pub use generics::*;
