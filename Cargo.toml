@@ -1,6 +1,6 @@
 [package]
 name = "proffer"
-version = "0.5.0"
+version = "1.0.0-rc1"
 authors = ["Miles Granger <miles59923@gmail.com>"]
 edition = "2018"
 description = "Rust code generation"

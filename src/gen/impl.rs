@@ -10,6 +10,27 @@ use crate::{internal, AssociatedTypeDefinition, Function, Generic, SrcCodeVec, T
 use tera::{Context, Tera};
 
 /// Represents an `impl` block
+///
+/// Example
+/// -------
+/// ```
+/// use proffer::*;
+///
+/// let ipl = Impl::new("FooBar")
+///     .add_generic(
+///         Generic::new("T").add_trait_bound("ToString").to_owned()
+///     )
+///     .set_impl_trait(
+///         Some(Trait::new("From<T>"))
+///     )
+///     .add_function(
+///         Function::new("from")
+///             .add_parameter(Parameter::new("s", "T"))
+///             .set_return_ty("Self")
+///             .set_body("Self { foo: s.to_string() }")
+///             .to_owned()
+///     );
+/// ```
 #[derive(Serialize, Default, Clone)]
 pub struct Impl {
     generics: Vec<Generic>,

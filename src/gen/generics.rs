@@ -11,6 +11,14 @@ use crate::internal;
 use crate::traits::SrcCode;
 
 /// Represent a single trait bound
+///
+/// Example
+/// -------
+/// ```
+/// use proffer::*;
+///
+/// let generic = Generic::new("T").add_trait_bound("ToString");
+/// ```
 #[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Generic {
     name: String,

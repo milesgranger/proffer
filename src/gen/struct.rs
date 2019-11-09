@@ -9,6 +9,21 @@ use tera::{Context, Tera};
 use crate::*;
 
 /// Represents a `struct` in source code.
+///
+/// Example
+/// -------
+/// ```
+/// use proffer::*;
+///
+/// let s = Struct::new("FooBar")
+///     .set_is_pub(true)
+///     .add_field(
+///         Field::new("foo", "String")
+///     )
+///     .add_attribute("#[derive(Clone)]")
+///     .to_owned();
+/// ```
+///
 #[derive(Default, Serialize, Clone)]
 pub struct Struct {
     is_pub: bool,
@@ -16,6 +31,7 @@ pub struct Struct {
     fields: Vec<Field>,
     generics: Vec<Generic>,
     docs: Vec<String>,
+    attributes: Vec<Attribute>,
 }
 
 impl Struct {
@@ -40,6 +56,12 @@ impl internal::Fields for Struct {
     }
 }
 
+impl internal::Attributes for Struct {
+    fn attributes_mut(&mut self) -> &mut Vec<Attribute> {
+        &mut self.attributes
+    }
+}
+
 impl internal::Generics for Struct {
     fn generics_mut(&mut self) -> &mut Vec<Generic> {
         &mut self.generics
@@ -60,6 +82,8 @@ impl SrcCode for Struct {
         let template = r#"
         {{ struct.docs | join(sep="
         ") }}
+        {{ attributes | join(sep="
+        ") }}
         {% if struct.is_pub %}pub {% endif %}struct {{ struct.name }}{{ generics }}
         {
             {% for field in fields %}{{ field }}{% endfor %}
@@ -69,6 +93,7 @@ impl SrcCode for Struct {
         context.insert("struct", &self);
         context.insert("fields", &self.fields.to_src_vec());
         context.insert("generics", &self.generics.generate());
+        context.insert("attributes", &self.attributes.to_src_vec());
         Tera::one_off(template, &context, false).unwrap()
     }
 }

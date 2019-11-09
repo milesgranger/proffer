@@ -7,6 +7,7 @@ use proffer::*;
 fn basic_gen() {
     let struct_ = Struct::new("Basic")
         .set_is_pub(true)
+        .add_attribute("#[derive(Clone)]")
         .add_field(
             Field::new("field1", "String")
                 .set_is_pub(true)
@@ -18,6 +19,7 @@ fn basic_gen() {
         .add_field(Field::new("field2", "usize"))
         .to_owned();
     let expected = r#"
+        #[derive(Clone)]
         pub struct Basic
         {
             /// Some example documentation

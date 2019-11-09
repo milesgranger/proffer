@@ -56,6 +56,25 @@ use tera::{Context, Tera};
 use crate::*;
 
 /// Represent a module of code
+///
+/// Example
+/// -------
+/// ```
+/// use proffer::*;
+///
+/// let m = Module::new("foo")
+///        .set_is_pub(true)
+///        .add_trait(Trait::new("Bar").set_is_pub(true).to_owned())
+///        .add_function(Function::new("foo"))
+///        .add_struct(Struct::new("Thingy"))
+///        .add_impl(Impl::new("Thingy"))
+///        .add_attribute("#[special_outer_attribute]")
+///        .add_attribute("#![special_inner_attribute]")
+///        .add_doc("//! Module level docs")
+///        .add_use_statement("use super::*;")
+///        .add_enum(Enum::new("EnumThingy"))
+///        .to_owned();
+/// ```
 #[derive(Default, Serialize, Clone)]
 pub struct Module {
     name: String,

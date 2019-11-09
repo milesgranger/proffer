@@ -13,7 +13,30 @@ use crate::internal::Generics;
 use crate::traits::SrcCode;
 use crate::{internal, Attribute, AttributeExt, Generic, SrcCodeVec};
 
-/// Represents a function or method. Determined if any `Parameter` contains `self`
+/// Represents a function or method.
+///
+/// Example
+/// -------
+/// ```
+/// use proffer::*;
+/// let func = Function::new("foo")
+///     .set_is_async(true)
+///     .set_is_pub(false)
+///     .add_attribute("#[function_attr]")
+///     .add_generic(
+///         Generic::new("T")
+///             .add_trait_bound("ToString")
+///             .to_owned()
+///     )
+///     .add_parameter(
+///         Parameter::new("bar", "usize")
+///             .add_attribute("#[parameter_attr]")
+///             .to_owned()
+///     )
+///     .set_return_ty("usize")
+///     .set_body("bar + 2")
+///     .to_owned();
+/// ```
 #[derive(Default, Serialize, Clone)]
 pub struct Function {
     signature: FunctionSignature,
