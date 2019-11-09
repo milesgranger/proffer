@@ -33,3 +33,15 @@ impl<T: SrcCode> SrcCodeVec for Vec<T> {
         self.iter().map(SrcCode::generate).collect()
     }
 }
+
+impl<'a> SrcCode for &'a str {
+    fn generate(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl SrcCode for String {
+    fn generate(&self) -> String {
+        self.clone()
+    }
+}

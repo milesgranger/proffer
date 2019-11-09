@@ -160,3 +160,25 @@ fn function_with_attributes() {
     println!("{}", &src_code);
     assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
 }
+
+#[test]
+fn function_push_into_body() {
+    let function = Function::new("foo")
+        .set_body("// Body")
+        .push_into_body("// First line")
+        .push_into_body("// Second line")
+        .to_owned();
+
+    let expected = r#"
+        fn foo() -> ()
+        {
+            // Body
+            // First line
+            // Second line
+        }
+    "#;
+
+    let src_code = function.generate_and_verify();
+    println!("{}", &src_code);
+    assert_eq!(norm_whitespace(expected), norm_whitespace(&src_code));
+}
