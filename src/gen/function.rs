@@ -53,6 +53,7 @@ pub struct FunctionSignature {
     generics: Vec<Generic>,
     return_ty: Option<String>,
     attributes: Vec<Attribute>,
+    docs: Vec<String>,
 }
 
 impl FunctionSignature {
@@ -113,6 +114,8 @@ impl internal::Generics for FunctionSignature {
 impl SrcCode for FunctionSignature {
     fn generate(&self) -> String {
         let template = r#"
+        {{ self.docs | join(sep="
+        ") }}
         {{ attributes | join(sep="
         ") }}
         {% if self.is_pub %}pub {% endif %}{% if self.is_async %}async {% endif %}fn {{ self.name }}{% if has_generics %}<{{ generic_keys | join(sep=", ") }}>{% endif %}({{ parameters | join(sep=", ") }}) -> {{ return_ty }}{% if has_generics %}
@@ -233,6 +236,12 @@ impl internal::Generics for Function {
     }
     fn generics(&self) -> &[Generic] {
         self.signature.generics.as_slice()
+    }
+}
+
+impl internal::Docs for Function {
+    fn docs_mut(&mut self) -> &mut Vec<String> {
+        &mut self.signature.docs
     }
 }
 

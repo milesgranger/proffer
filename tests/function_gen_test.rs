@@ -5,9 +5,12 @@ use proffer::*;
 
 #[test]
 fn function_gen_basic() {
-    let function = Function::new("foo");
+    let function = Function::new("foo")
+        .add_doc("// some documentation")
+        .to_owned();
 
     let expected = r#"
+        // some documentation
         fn foo() -> ()
         {
         }
