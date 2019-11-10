@@ -54,6 +54,19 @@ fn test_module_basic() {
 }
 
 #[test]
+fn test_get_submodules_of_module() {
+    let mut module = Module::new("Foo");
+
+    assert!(module.get_submodule("Bar1").is_none());
+    module.add_submodule(Module::new("Bar1"));
+    assert!(module.get_submodule("Bar1").is_some());
+
+    assert!(module.get_submodule_mut("Bar2").is_none());
+    module.add_submodule(Module::new("Bar2"));
+    assert!(module.get_submodule_mut("Bar2").is_some());
+}
+
+#[test]
 fn test_module_submodule() {
     let m = Module::new("upper_module")
         .set_is_pub(true)

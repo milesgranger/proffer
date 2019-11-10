@@ -54,6 +54,9 @@ use serde::Serialize;
 use tera::{Context, Tera};
 
 use crate::*;
+use std::borrow::Borrow;
+use std::collections::HashMap;
+use std::hash::Hash;
 
 /// Represent a module of code
 ///
@@ -85,7 +88,7 @@ pub struct Module {
     impls: Vec<Impl>,
     enums: Vec<Enum>,
     docs: Vec<String>,
-    sub_modules: Vec<Module>,
+    sub_modules: HashMap<String, Module>,
     attributes: Vec<Attribute>,
     use_stmts: Vec<String>,
 }
@@ -105,8 +108,24 @@ impl Module {
     }
     /// Add submodule
     pub fn add_submodule(&mut self, module: Module) -> &mut Self {
-        self.sub_modules.push(module);
+        self.sub_modules.insert(module.name.clone(), module);
         self
+    }
+    /// Get a mutable reference to a submodule of this module
+    pub fn get_submodule_mut<Q>(&mut self, name: &Q) -> Option<&mut Module>
+    where
+        String: Borrow<Q>,
+        Q: ?Sized + Hash + Eq,
+    {
+        self.sub_modules.get_mut(name)
+    }
+    /// Get a reference to a submodule of this module.
+    pub fn get_submodule<Q>(&self, name: &Q) -> Option<&Module>
+    where
+        String: Borrow<Q>,
+        Q: ?Sized + Hash + Eq,
+    {
+        self.sub_modules.get(name)
     }
     /// Add a function to the module
     pub fn add_function(&mut self, func: Function) -> &mut Self {
@@ -201,7 +220,14 @@ impl SrcCode for Module {
         self.enums.iter().for_each(|v| objs.push(v.generate()));
         ctx.insert("objs", &objs);
 
-        ctx.insert("submodules", &self.sub_modules.to_src_vec());
+        ctx.insert(
+            "submodules",
+            &self
+                .sub_modules
+                .values()
+                .map(|m| m.generate())
+                .collect::<Vec<String>>(),
+        );
         Tera::one_off(template, &ctx, false).unwrap()
     }
 }
